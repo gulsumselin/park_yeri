@@ -1,27 +1,37 @@
 [
   {
-    "name": "Boş Park Alanı 1",
+    "name": "Park Alanı 1",
     "lat": 37.7749,
-    "lng": 29.0907
+    "lng": 29.0907,
+    "kontenjan": 100,
+    "giren": 50
   },
   {
-    "name": "Boş Park Alanı 2",
+    "name": "Park Alanı 2",
     "lat": 37.7850,
-    "lng": 29.0950
+    "lng": 29.0950,
+    "kontenjan": 100,
+    "giren": 50
   },
   {
-    "name": "Boş Park Alanı 3",
+    "name": "Park Alanı 3",
     "lat": 37.7950,
-    "lng": 29.1000
+    "lng": 29.1000,
+    "kontenjan": 100,
+    "giren": 50
   },
   {
-    "name": "Boş Park Alanı 4",
+    "name": "Park Alanı 4",
     "lat": 37.8050,
-    "lng": 29.1050
+    "lng": 29.1050,
+    "kontenjan": 100,
+    "giren": 50
   },
   {
-    "name": "Boş Park Alanı 5",
+    "name": "Park Alanı 5",
     "lat": 37.8150,
-    "lng": 29.1100
+    "lng": 29.1100,
+    "kontenjan": 100,
+    "giren": 50
   }
 ]

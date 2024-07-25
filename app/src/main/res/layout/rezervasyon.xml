@@ -27,6 +27,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <TextView
+        android:id="@+id/kontenjan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kontenjan"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/koordinatlar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/bosYer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Kontenjan"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@+id/kontenjan"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
     <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"

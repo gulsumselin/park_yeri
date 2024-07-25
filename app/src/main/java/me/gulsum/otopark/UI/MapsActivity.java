@@ -55,7 +55,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 String name = obj.getString("name");
                 double lat = obj.getDouble("lat");
                 double lng = obj.getDouble("lng");
-                parkAlanlari.add(new ParkAlani(name, lat, lng));
+                int kontenjan = obj.getInt("kontenjan");
+                int giren = obj.getInt(("giren"));
+                parkAlanlari.add(new ParkAlani(name, lat, lng, kontenjan, giren));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,6 +89,10 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                     if (parkAlani.name.equals(marker.getTitle())) {
                         intent.putExtra("latitude", parkAlani.lat);
                         intent.putExtra("longitude", parkAlani.lng);
+                        intent.putExtra("kontenjan",parkAlani.kontenjan);
+                        intent.putExtra("giren", parkAlani.giren);
+                        intent.putExtra("bosYer",parkAlani.bosYer);
+
                         break;
                     }
                 }
