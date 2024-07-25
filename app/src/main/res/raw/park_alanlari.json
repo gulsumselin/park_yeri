@@ -1,0 +1,27 @@
+[
+  {
+    "name": "Boş Park Alanı 1",
+    "lat": 37.7749,
+    "lng": 29.0907
+  },
+  {
+    "name": "Boş Park Alanı 2",
+    "lat": 37.7850,
+    "lng": 29.0950
+  },
+  {
+    "name": "Boş Park Alanı 3",
+    "lat": 37.7950,
+    "lng": 29.1000
+  },
+  {
+    "name": "Boş Park Alanı 4",
+    "lat": 37.8050,
+    "lng": 29.1050
+  },
+  {
+    "name": "Boş Park Alanı 5",
+    "lat": 37.8150,
+    "lng": 29.1100
+  }
+]

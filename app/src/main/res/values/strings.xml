@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">Otopark</string>
+    <string name="hosgeldiniz">Hoş Geldiniz</string>
+    <string name="ilerle">İlerle</string>
+    <string name="otopark_bilgi">Otopark Bilgi</string>
+    <string name="basla">Başla</string>
+    <string name="odeme_bilgi">Ödeme Bilgisi ve Rezervasyon </string>
+    <string name="my_apı_key">AIzaSyBZiwUGEG65qNdO1vjdHCHepEFBFQFqyto</string>
+    <string name="park_yeri">Uygun Park Yerlerini Görüntüle</string>
+    <string name="haritaya_git">Haritaya git</string>
+    <string name="register">Kayıt Ol</string>
+    <string name="sign_up">Giriş Yap</string>
+</resources>
