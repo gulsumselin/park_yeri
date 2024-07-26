@@ -1,37 +1,37 @@
 [
   {
-    "name": "Park Alanı 1",
+    "name": "Park Alani 1",
     "lat": 37.7749,
     "lng": 29.0907,
     "kontenjan": 100,
-    "giren": 50
+    "giren": 70
   },
   {
     "name": "Park Alanı 2",
     "lat": 37.7850,
     "lng": 29.0950,
     "kontenjan": 100,
-    "giren": 50
+    "giren": 30
   },
   {
     "name": "Park Alanı 3",
     "lat": 37.7950,
     "lng": 29.1000,
     "kontenjan": 100,
-    "giren": 50
+    "giren": 80
   },
   {
     "name": "Park Alanı 4",
     "lat": 37.8050,
     "lng": 29.1050,
     "kontenjan": 100,
-    "giren": 50
+    "giren": 10
   },
   {
     "name": "Park Alanı 5",
     "lat": 37.8150,
     "lng": 29.1100,
     "kontenjan": 100,
-    "giren": 50
+    "giren": 45
   }
 ]

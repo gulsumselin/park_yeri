@@ -13,7 +13,13 @@ import java.util.List;
 import me.gulsum.otopark.R;
 
 public class ParkAlaniReader {
-    public List<ParkAlani> parkAlanlariniOku(Context context) {
+    private Context context;
+
+    public ParkAlaniReader(Context context) {
+        this.context = context;
+    }
+
+    public List<ParkAlani> parkAlanlariniOku() {
         List<ParkAlani> parkAlanlari = new ArrayList<>();
         try {
             InputStream is = context.getResources().openRawResource(R.raw.park_alanlari); // JSON dosyasını raw klasörüne koyun
@@ -31,6 +37,7 @@ public class ParkAlaniReader {
                 double lng = obj.getDouble("lng");
                 int kontenjan = obj.getInt("kontenjan");
                 int giren = obj.getInt("giren");
+                int bosYer = obj.getInt("bosYer");
                 parkAlanlari.add(new ParkAlani(name, lat, lng, kontenjan, giren));
             }
         } catch (Exception e) {
@@ -39,4 +46,3 @@ public class ParkAlaniReader {
         return parkAlanlari;
     }
 }
-

@@ -10,4 +10,13 @@
     <string name="haritaya_git">Haritaya git</string>
     <string name="register">Kayıt Ol</string>
     <string name="sign_up">Giriş Yap</string>
+
+
+        <string-array name="car_types">
+            <item>Otomobil</item>
+            <item>Motorsiklet</item>
+            <item>Otobüs</item>
+            <item>Minibüs</item>
+        </string-array>
+
 </resources>

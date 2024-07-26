@@ -33,9 +33,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".UI.RegisterActivity"/>
+        <activity android:name=".UI.LoginActivity"/>
+        <activity android:name=".UI.UserMapsActivity" />
+        <activity android:name=".UI.UserRezervasyonActivity" />
+
         <activity android:name=".UI.SelectionActivity" />
         <activity android:name=".UI.MapsActivity" />
         <activity android:name=".UI.RezervasyonActivity" />
+
+        <activity android:name=".UI.OdemeActivity" />
         <activity android:name=".UI.Screen.OnBoard.OnBoard1" />
         <activity android:name=".UI.Screen.OnBoard.OnBoard2" />
 

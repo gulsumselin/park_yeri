@@ -8,7 +8,6 @@ import android.os.Looper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import me.gulsum.otopark.R;
-import me.gulsum.otopark.UI.Screen.OnBoard.OnBoard1;
 
 public class SplashActivity extends AppCompatActivity {
     private static final int SPLASH_DELAY = 3000;

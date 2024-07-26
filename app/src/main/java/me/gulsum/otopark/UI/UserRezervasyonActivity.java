@@ -11,7 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import me.gulsum.otopark.R;
 import me.gulsum.otopark.UI.Model.ParkAlani;
 
-public class RezervasyonActivity extends AppCompatActivity {
+public class UserRezervasyonActivity extends AppCompatActivity {
 
     private TextView parkAdiTextView;
     private TextView bosYerTextView;
@@ -19,7 +19,7 @@ public class RezervasyonActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.rezervasyon);
+        setContentView(R.layout.rezervasyon_user);
 
         parkAdiTextView = findViewById(R.id.park_adi);
         bosYerTextView = findViewById(R.id.bosYer);
@@ -36,29 +36,16 @@ public class RezervasyonActivity extends AppCompatActivity {
 
         showBottomSheetDialog(parkAdi, latitude, longitude, kontenjan, bosYer);
 
-        Button signUp = findViewById(R.id.sign_up);
-
-        signUp.setOnClickListener(new View.OnClickListener() {
+        Button rezervasyon = findViewById(R.id.rezervasyon);
+        rezervasyon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(RezervasyonActivity.this, LoginActivity.class);
-                startActivity(intent);
-
-            }
-        });
-
-        Button register = findViewById(R.id.register);
-
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RezervasyonActivity.this, RegisterActivity.class);
+                Intent intent = new Intent(UserRezervasyonActivity.this, OdemeActivity.class);
                 startActivity(intent);
 
             }
         });
     }
-
 
     private void showBottomSheetDialog(String parkAdi, double latitude, double longitude, int kontenjan, int bosYer) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);

@@ -1,3 +1,5 @@
+
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -38,8 +40,12 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.play.services.maps)
     implementation ("com.google.android.gms:play-services-maps:18.1.0")
+    implementation ("com.google.android.gms:play-services-location:21.3.0")
     implementation("androidx.lifecycle:lifecycle-common:2.6.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
+
+    implementation ("com.google.code.gson:gson:2.8.9")
+
     implementation(libs.play.services.location)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

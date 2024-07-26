@@ -17,4 +17,3 @@ public class ParkAlani {
         this.bosYer = kontenjan - giren;
     }
 }
-
