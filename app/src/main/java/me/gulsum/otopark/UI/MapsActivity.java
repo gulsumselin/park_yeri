@@ -56,7 +56,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                 double lat = obj.getDouble("lat");
                 double lng = obj.getDouble("lng");
                 int kontenjan = obj.getInt("kontenjan");
-                int giren = obj.getInt(("giren"));
+                int giren = obj.getInt("giren");
                 parkAlanlari.add(new ParkAlani(name, lat, lng, kontenjan, giren));
             }
         } catch (Exception e) {
