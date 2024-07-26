@@ -6,65 +6,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/background">
 
-    <TextView
-        android:id="@+id/park_adi"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/onay"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Park Alanı Adı"
-        android:textSize="18sp"
-        app:layout_constraintTop_toTopOf="parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/koordinatlar"/>
-
-    <TextView
-        android:id="@+id/koordinatlar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Koordinatlar"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/park_adi"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/kontenjan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kontenjan"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/koordinatlar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/bosYer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Kontenjan"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@+id/kontenjan"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="16dp">
-
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_gravity="center">
+        app:layout_constraintTop_toBottomOf="@id/alan_bilgi">
 
         <TextView
-            android:id="@+id/onay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
@@ -85,18 +38,14 @@
 
     </LinearLayout>
 
-    </LinearLayout>
-
     <LinearLayout
         android:id="@+id/registerOrSign"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintTop_toBottomOf="@id/onay"
+        android:layout_marginTop="20dp"
+        >
 
         <Button
             android:id="@+id/sign_up"
@@ -118,6 +67,40 @@
             android:textStyle="bold"
             android:background="@color/transparent"
             android:layout_height="match_parent"/>
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/alan_bilgi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/park_adi"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:text="Park Alanı Adı"
+            android:textSize="30sp"
+            >
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/bosYer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Boş Yer"
+            android:textSize="30sp"
+            >
+
+        </TextView>
+
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
