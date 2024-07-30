@@ -1,80 +1,99 @@
 package me.gulsum.otopark.UI;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.gson.Gson;
+
 import me.gulsum.otopark.R;
 
-public class OdemeActivity extends AppCompatActivity{
+public class OdemeActivity extends AppCompatActivity {
 
+    private Spinner carTypeSpinner;
+    private TextView kullaniciAdiTextView;
+    private TextView kullaniciEmailTextView;
+    private TextView parkAdiTextView;
+    private TextView bosYerTextView;
+    private TextView parkKontenjanTextView;
+    private TextView priceValueTextView;
+    private EditText editTextHours;
 
-        private TextView userNameTextView;
-        private TextView userEmailTextView;
-        private TextView parkAdiTextView;
-        private TextView bosYerTextView;
-        private TextView parkKontenjanTextView;
-        private TextView priceValueTextView;
-        private Button confirmPaymentButton;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.odeme);
 
-        private SharedPreferences sharedPreferences;
-        private static final String PREF_NAME = "user_prefs";
-        private static final String KEY_LOGGED_IN_USER = "logged_in_user";
+        kullaniciAdiTextView = findViewById(R.id.kullanici_adi);
+        kullaniciEmailTextView = findViewById(R.id.kullanici_email);
+        parkAdiTextView = findViewById(R.id.park_adi);
+        bosYerTextView = findViewById(R.id.bosYer);
+        parkKontenjanTextView = findViewById(R.id.park_kontenjan);
+        priceValueTextView = findViewById(R.id.price_value);
+        carTypeSpinner = findViewById(R.id.spinnerCarType);
+        editTextHours = findViewById(R.id.editTextHours);
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.odeme);
+        Intent intent = getIntent();
+        String kullaniciAdi = intent.getStringExtra("kullanici_adi");
+        String kullaniciEmail = intent.getStringExtra("kullanici_email");
+        String parkAdi = intent.getStringExtra("park_adi");
+        int bosYer = intent.getIntExtra("bosYer", 0);
+        int kontenjan = intent.getIntExtra("kontenjan", 0);
+        double initialPrice = intent.getDoubleExtra("price", 0.0);
 
-            userNameTextView = findViewById(R.id.user_name);
-            userEmailTextView = findViewById(R.id.user_email);
-            parkAdiTextView = findViewById(R.id.park_adi);
-            bosYerTextView = findViewById(R.id.bosYer);
-            parkKontenjanTextView = findViewById(R.id.park_kontenjan);
-            priceValueTextView = findViewById(R.id.price_value);
-            confirmPaymentButton = findViewById(R.id.confirm_payment_button);
+        kullaniciAdiTextView.setText("Kullanıcı Adı: " + kullaniciAdi);
+        kullaniciEmailTextView.setText("E-posta: " + kullaniciEmail);
+        parkAdiTextView.setText("Park Alanı: " + parkAdi);
+        bosYerTextView.setText("Boş Yer: " + bosYer);
+        parkKontenjanTextView.setText("Kontenjan: " + kontenjan);
+        priceValueTextView.setText(String.format("%.2f TL", initialPrice));
 
-            sharedPreferences = getSharedPreferences(PREF_NAME, MODE_PRIVATE);
-            loadUserData();
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.car_types, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        carTypeSpinner.setAdapter(adapter);
 
-            String parkAdi = "Örnek Park Alanı";
-            double latitude = 41.015137;
-            double longitude = 28.979530;
-            int kontenjan = 100;
-            int bosYer = 20;
-            double price = 50.00;
-
-            parkAdiTextView.setText("Park Alanı: " + parkAdi);
-            bosYerTextView.setText("Boş Yer: " + bosYer);
-            parkKontenjanTextView.setText("Kontenjan: " + kontenjan);
-            priceValueTextView.setText(price + " TL");
-
-            confirmPaymentButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(OdemeActivity.this, "Ödeme onaylandı!", Toast.LENGTH_SHORT).show();
-
-                }
-            });
-        }
-
-        private void loadUserData() {
-            Gson gson = new Gson();
-            String json = sharedPreferences.getString(KEY_LOGGED_IN_USER, "");
-            if (!json.isEmpty()) {
-                User loggedInUser = gson.fromJson(json, User.class);
-                userNameTextView.setText("Ad: " + loggedInUser.getName());
-                userEmailTextView.setText("E-posta: " + loggedInUser.getEmail());
-            } else {
-                Intent intent = new Intent(OdemeActivity.this, LoginActivity.class);
-                startActivity(intent);
-                finish();
+        carTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                updatePrice();
             }
-        }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                // Nothing to do
+            }
+        });
+
+        editTextHours.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                updatePrice();
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable s) {}
+        });
     }
 
+    private void updatePrice() {
+        int[] prices = getResources().getIntArray(R.array.car_prices);
+        int position = carTypeSpinner.getSelectedItemPosition();
+        double selectedPricePerHour = prices[position];
+        String hoursString = editTextHours.getText().toString();
+        double hours = 0;
+        if (!hoursString.isEmpty()) {
+            hours = Double.parseDouble(hoursString);
+        }
+        double totalPrice = selectedPricePerHour * hours;
+        priceValueTextView.setText(String.format("%.2f TL", totalPrice));
+    }
+}
