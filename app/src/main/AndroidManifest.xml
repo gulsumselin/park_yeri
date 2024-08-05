@@ -35,6 +35,8 @@
 
         <activity android:name=".UI.RegisterActivity"/>
         <activity android:name=".UI.LoginActivity"/>
+        <activity android:name=".UI.ProfileActivity" />
+
         <activity android:name=".UI.UserMapsActivity" />
         <activity android:name=".UI.UserRezervasyonActivity" />
 

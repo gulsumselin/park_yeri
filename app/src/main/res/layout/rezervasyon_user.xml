@@ -66,23 +66,6 @@
 
         </TextView>
 
-        <TextView
-            android:id="@+id/kullanici_adi"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Kullanıcı Adı"
-            android:textSize="16sp"
-            android:layout_marginTop="16dp"/>
-
-        <TextView
-            android:id="@+id/kullanici_email"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="E-posta"
-            android:textSize="16sp"
-            android:layout_marginTop="8dp"/>
-
-
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

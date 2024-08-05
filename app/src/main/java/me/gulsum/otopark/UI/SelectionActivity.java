@@ -60,6 +60,7 @@ public class SelectionActivity extends AppCompatActivity implements OnMapReadyCa
                 double lng = obj.getDouble("lng");
                 int kontenjan = obj.getInt("kontenjan");
                 int giren = obj.getInt("giren");
+                int bosYer = kontenjan - giren;
                 parkAlanlari.add(new ParkAlani(name, lat, lng, kontenjan, giren));
             }
         } catch (Exception e) {
@@ -103,9 +104,6 @@ public class SelectionActivity extends AppCompatActivity implements OnMapReadyCa
 
             }
         });
-
-
-
 
         Button btnOpenMap = findViewById(R.id.mapsButton);
         btnOpenMap.setOnClickListener(new View.OnClickListener() {

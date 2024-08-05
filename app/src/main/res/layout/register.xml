@@ -33,12 +33,21 @@
         android:layout_marginBottom="16dp"/>
 
     <EditText
+        android:id="@+id/editTextPhone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/editTextEmail"
+        android:hint="Telefon Numarası "
+        android:inputType="number"
+        android:layout_marginBottom="16dp"/>
+
+    <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Şifre"
         android:inputType="textPassword"
-        android:layout_below="@id/editTextEmail"
+        android:layout_below="@id/editTextPhone"
         android:layout_marginBottom="16dp"/>
 
     <EditText

@@ -17,8 +17,6 @@ public class UserRezervasyonActivity extends AppCompatActivity {
 
     private TextView parkAdiTextView;
     private TextView bosYerTextView;
-    private TextView kullaniciAdiTextView;
-    private TextView kullaniciEmailTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,10 +25,7 @@ public class UserRezervasyonActivity extends AppCompatActivity {
 
         parkAdiTextView = findViewById(R.id.park_adi);
         bosYerTextView = findViewById(R.id.bosYer);
-        kullaniciAdiTextView = findViewById(R.id.kullanici_adi);
-        kullaniciEmailTextView = findViewById(R.id.kullanici_email);
 
-        // Park ve kullanıcı bilgilerini alma
         String parkAdi = getIntent().getStringExtra("park_adi");
         double latitude = getIntent().getDoubleExtra("latitude", 0);
         double longitude = getIntent().getDoubleExtra("longitude", 0);
@@ -45,12 +40,6 @@ public class UserRezervasyonActivity extends AppCompatActivity {
         if (bosYer != 0) {
             bosYerTextView.setText("Boş Yer: " + bosYer);
         }
-        if (kullaniciAdi != null) {
-            kullaniciAdiTextView.setText("Kullanıcı Adı: " + kullaniciAdi);
-        }
-        if (kullaniciEmail != null) {
-            kullaniciEmailTextView.setText("E-posta: " + kullaniciEmail);
-        }
 
         showBottomSheetDialog(parkAdi, latitude, longitude, kontenjan, bosYer);
 
@@ -59,7 +48,6 @@ public class UserRezervasyonActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserRezervasyonActivity.this, OdemeActivity.class);
-                // Park bilgilerini ve kullanıcı bilgilerini Intent ile geç
                 intent.putExtra("kullanici_adi", kullaniciAdi);
                 intent.putExtra("kullanici_email", kullaniciEmail);
                 intent.putExtra("park_adi", parkAdi);

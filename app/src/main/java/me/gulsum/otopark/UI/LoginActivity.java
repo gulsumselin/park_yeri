@@ -54,29 +54,20 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         Gson gson = new Gson();
-        String json = sharedPreferences.getString(KEY_USER_LIST, "[]");
+        String userKey = "user_" + email;
+        String userJson = sharedPreferences.getString(userKey, "");
 
-        Type type = new TypeToken<List<User>>() {
-        }.getType();
-        List<User> userList = gson.fromJson(json, type);
-
-        boolean isValidUser = false;
-        User loggedInUser = null;
-        for (User user : userList) {
-            if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
-                isValidUser = true;
-                loggedInUser = user;
-                break;
+        if (!userJson.isEmpty()) {
+            User user = gson.fromJson(userJson, User.class);
+            if (user != null && user.getPassword().equals(password)) {
+                Toast.makeText(this, "Giriş başarılı!", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, ProfileActivity.class);
+                intent.putExtra("user_email", user.getEmail());
+                startActivity(intent);
+                finish();
+            } else {
+                Toast.makeText(this, "Geçersiz e-posta veya şifre.", Toast.LENGTH_SHORT).show();
             }
-        }
-
-        if (isValidUser && loggedInUser != null) {
-            Toast.makeText(this, "Giriş başarılı!", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(LoginActivity.this, UserMapsActivity.class);
-            intent.putExtra("kullanici_adi", loggedInUser.getName());
-            intent.putExtra("kullanici_email", loggedInUser.getEmail());
-            startActivity(intent);
-            finish();
         } else {
             Toast.makeText(this, "Geçersiz e-posta veya şifre.", Toast.LENGTH_SHORT).show();
         }

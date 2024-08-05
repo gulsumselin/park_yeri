@@ -11,17 +11,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.List;
 
 import me.gulsum.otopark.R;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private EditText editTextName, editTextEmail, editTextPassword, editTextCarPlate;
+    private EditText editTextName, editTextEmail, editTextPhone, editTextPassword, editTextCarPlate;
     private Spinner spinnerCarType;
     private Button buttonRegister;
     private SharedPreferences sharedPreferences;
@@ -35,6 +30,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         editTextName = findViewById(R.id.editTextName);
         editTextEmail = findViewById(R.id.editTextEmail);
+        editTextPhone = findViewById(R.id.editTextPhone);
         editTextPassword = findViewById(R.id.editTextPassword);
         editTextCarPlate = findViewById(R.id.editTextCarPlate);
         spinnerCarType = findViewById(R.id.spinnerCarType);
@@ -53,6 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void registerUser() {
         String name = editTextName.getText().toString();
         String email = editTextEmail.getText().toString();
+        String number = editTextPhone.getText().toString();
         String password = editTextPassword.getText().toString();
         String carPlate = editTextCarPlate.getText().toString();
         String carType = spinnerCarType.getSelectedItem().toString();
@@ -62,31 +59,23 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        User user = new User(name, email, password, carPlate, carType);
+        User user = new User(name, email, number, password, carPlate, carType);
         saveUser(user);
 
         Toast.makeText(this, "Kayıt başarılı!", Toast.LENGTH_SHORT).show();
-        finish();
 
         Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
         startActivity(intent);
+        finish();
     }
 
     private void saveUser(User user) {
         Gson gson = new Gson();
-        String json = sharedPreferences.getString(KEY_USER_LIST, "[]");
-
-        Type type = new TypeToken<ArrayList<User>>() {}.getType();
-        List<User> userList = gson.fromJson(json, type);
-
-        if (userList == null) {
-            userList = new ArrayList<>();
-        }
-
-        userList.add(user);
-
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString(KEY_USER_LIST, gson.toJson(userList));
+
+        String userKey = "user_" + user.getEmail();
+        String userJson = gson.toJson(user);
+        editor.putString(userKey, userJson);
         editor.apply();
     }
 }

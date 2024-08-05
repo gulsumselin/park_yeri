@@ -16,8 +16,6 @@ import me.gulsum.otopark.R;
 public class OdemeActivity extends AppCompatActivity {
 
     private Spinner carTypeSpinner;
-    private TextView kullaniciAdiTextView;
-    private TextView kullaniciEmailTextView;
     private TextView parkAdiTextView;
     private TextView bosYerTextView;
     private TextView parkKontenjanTextView;
@@ -29,8 +27,6 @@ public class OdemeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.odeme);
 
-        kullaniciAdiTextView = findViewById(R.id.kullanici_adi);
-        kullaniciEmailTextView = findViewById(R.id.kullanici_email);
         parkAdiTextView = findViewById(R.id.park_adi);
         bosYerTextView = findViewById(R.id.bosYer);
         parkKontenjanTextView = findViewById(R.id.park_kontenjan);
@@ -46,8 +42,6 @@ public class OdemeActivity extends AppCompatActivity {
         int kontenjan = intent.getIntExtra("kontenjan", 0);
         double initialPrice = intent.getDoubleExtra("price", 0.0);
 
-        kullaniciAdiTextView.setText("Kullanıcı Adı: " + kullaniciAdi);
-        kullaniciEmailTextView.setText("E-posta: " + kullaniciEmail);
         parkAdiTextView.setText("Park Alanı: " + parkAdi);
         bosYerTextView.setText("Boş Yer: " + bosYer);
         parkKontenjanTextView.setText("Kontenjan: " + kontenjan);
