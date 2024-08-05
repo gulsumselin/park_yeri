@@ -6,15 +6,19 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+
 import me.gulsum.otopark.R;
-import me.gulsum.otopark.UI.Model.ParkAlani;
 
 public class UserRezervasyonActivity extends AppCompatActivity {
 
     private TextView parkAdiTextView;
     private TextView bosYerTextView;
+    private TextView kullaniciAdiTextView;
+    private TextView kullaniciEmailTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,26 +27,48 @@ public class UserRezervasyonActivity extends AppCompatActivity {
 
         parkAdiTextView = findViewById(R.id.park_adi);
         bosYerTextView = findViewById(R.id.bosYer);
+        kullaniciAdiTextView = findViewById(R.id.kullanici_adi);
+        kullaniciEmailTextView = findViewById(R.id.kullanici_email);
 
+        // Park ve kullanıcı bilgilerini alma
         String parkAdi = getIntent().getStringExtra("park_adi");
         double latitude = getIntent().getDoubleExtra("latitude", 0);
         double longitude = getIntent().getDoubleExtra("longitude", 0);
         int kontenjan = getIntent().getIntExtra("kontenjan", 0);
-        int giren = getIntent().getIntExtra("giren", 0);
         int bosYer = getIntent().getIntExtra("bosYer", 0);
+        String kullaniciAdi = getIntent().getStringExtra("kullanici_adi");
+        String kullaniciEmail = getIntent().getStringExtra("kullanici_email");
 
-        Intent intent = getIntent();
-        ParkAlani parkAlani = intent.getParcelableExtra("parkAlani");
+        if (parkAdi != null) {
+            parkAdiTextView.setText("Park Alanı: " + parkAdi);
+        }
+        if (bosYer != 0) {
+            bosYerTextView.setText("Boş Yer: " + bosYer);
+        }
+        if (kullaniciAdi != null) {
+            kullaniciAdiTextView.setText("Kullanıcı Adı: " + kullaniciAdi);
+        }
+        if (kullaniciEmail != null) {
+            kullaniciEmailTextView.setText("E-posta: " + kullaniciEmail);
+        }
 
         showBottomSheetDialog(parkAdi, latitude, longitude, kontenjan, bosYer);
 
-        Button rezervasyon = findViewById(R.id.rezervasyon);
-        rezervasyon.setOnClickListener(new View.OnClickListener() {
+        Button rezervasyonButton = findViewById(R.id.rezervasyon);
+        rezervasyonButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(UserRezervasyonActivity.this, OdemeActivity.class);
+                // Park bilgilerini ve kullanıcı bilgilerini Intent ile geç
+                intent.putExtra("kullanici_adi", kullaniciAdi);
+                intent.putExtra("kullanici_email", kullaniciEmail);
+                intent.putExtra("park_adi", parkAdi);
+                intent.putExtra("bosYer", bosYer);
+                intent.putExtra("kontenjan", kontenjan);
+                intent.putExtra("latitude", latitude);
+                intent.putExtra("longitude", longitude);
+                intent.putExtra("price", 50.00);
                 startActivity(intent);
-
             }
         });
     }
@@ -57,13 +83,18 @@ public class UserRezervasyonActivity extends AppCompatActivity {
         TextView bottomSheetBosYerTextView = bottomSheetDialog.findViewById(R.id.bosYer);
         Button konumaGitButton = bottomSheetDialog.findViewById(R.id.konuma_git_button);
 
-        if (bottomSheetParkAdiTextView != null)
+        if (bottomSheetParkAdiTextView != null) {
             bottomSheetParkAdiTextView.setText("Park Alanı: " + parkAdi);
-        if (koordinatlarTextView != null)
-            koordinatlarTextView.setText("Koordinatlar: " + latitude + ", " + longitude);
-        if (kontenjanTextView != null) kontenjanTextView.setText("Kontenjan: " + kontenjan);
-        if (bottomSheetBosYerTextView != null)
+        }
+        if (koordinatlarTextView != null) {
+            koordinatlarTextView.setText(String.format("Koordinatlar: %.6f, %.6f", latitude, longitude));
+        }
+        if (kontenjanTextView != null) {
+            kontenjanTextView.setText("Kontenjan: " + kontenjan);
+        }
+        if (bottomSheetBosYerTextView != null) {
             bottomSheetBosYerTextView.setText("Boş Yer: " + bosYer);
+        }
 
         if (konumaGitButton != null) {
             konumaGitButton.setOnClickListener(new View.OnClickListener() {
@@ -80,8 +111,12 @@ public class UserRezervasyonActivity extends AppCompatActivity {
         }
 
         bottomSheetDialog.setOnDismissListener(dialog -> {
-            parkAdiTextView.setText("Park Alanı: " + parkAdi);
-            bosYerTextView.setText("Boş Yer: " + bosYer);
+            if (parkAdiTextView != null) {
+                parkAdiTextView.setText("Park Alanı: " + parkAdi);
+            }
+            if (bosYerTextView != null) {
+                bosYerTextView.setText("Boş Yer: " + bosYer);
+            }
         });
 
         bottomSheetDialog.show();

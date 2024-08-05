@@ -104,9 +104,6 @@ public class SelectionActivity extends AppCompatActivity implements OnMapReadyCa
             }
         });
 
-
-
-
         Button btnOpenMap = findViewById(R.id.mapsButton);
         btnOpenMap.setOnClickListener(new View.OnClickListener() {
             @Override

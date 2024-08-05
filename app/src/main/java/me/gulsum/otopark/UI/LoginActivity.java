@@ -56,20 +56,25 @@ public class LoginActivity extends AppCompatActivity {
         Gson gson = new Gson();
         String json = sharedPreferences.getString(KEY_USER_LIST, "[]");
 
-        Type type = new TypeToken<List<User>>() {}.getType();
+        Type type = new TypeToken<List<User>>() {
+        }.getType();
         List<User> userList = gson.fromJson(json, type);
 
         boolean isValidUser = false;
+        User loggedInUser = null;
         for (User user : userList) {
             if (user.getEmail().equals(email) && user.getPassword().equals(password)) {
                 isValidUser = true;
+                loggedInUser = user;
                 break;
             }
         }
 
-        if (isValidUser) {
+        if (isValidUser && loggedInUser != null) {
             Toast.makeText(this, "Giriş başarılı!", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(LoginActivity.this, UserMapsActivity.class);
+            intent.putExtra("kullanici_adi", loggedInUser.getName());
+            intent.putExtra("kullanici_email", loggedInUser.getEmail());
             startActivity(intent);
             finish();
         } else {

@@ -19,4 +19,11 @@
             <item>Minibüs</item>
         </string-array>
 
+    <integer-array name="car_prices">
+        <item>70</item>
+        <item>35</item>
+        <item>210</item>
+        <item>140</item>
+    </integer-array>
+
 </resources>
