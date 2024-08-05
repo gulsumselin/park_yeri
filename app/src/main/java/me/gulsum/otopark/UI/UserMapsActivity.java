@@ -30,7 +30,6 @@ import com.google.android.gms.tasks.Task;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -39,17 +38,15 @@ import java.util.List;
 import me.gulsum.otopark.R;
 import me.gulsum.otopark.UI.Model.ParkAlani;
 
-public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCallback{
+public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private final int FINE_PERMISSION_CODE = 1;
     private GoogleMap mMap;
     private SearchView mapSearchView;
-
     Location currentLocation;
     FusedLocationProviderClient fusedLocationProviderClient;
     private List<ParkAlani> parkAlanlari;
 
-    // Kullanıcı bilgileri
     private String kullaniciAdi;
     private String kullaniciEmail;
 
@@ -60,7 +57,6 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
 
         mapSearchView = findViewById(R.id.mapSearch);
 
-        // Kullanıcı bilgilerini alma
         kullaniciAdi = getIntent().getStringExtra("kullanici_adi");
         kullaniciEmail = getIntent().getStringExtra("kullanici_email");
 
@@ -74,26 +70,31 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
         mapSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String s) {
-
                 String location = mapSearchView.getQuery().toString();
-                List<Address> addressList = null;
 
-                if(location != null){
+                if (location != null && !location.isEmpty()) {
                     Geocoder geocoder = new Geocoder(UserMapsActivity.this);
+                    List<Address> addressList = null;
 
-                    try{
+                    try {
                         addressList = geocoder.getFromLocationName(location, 1);
-                    } catch (IOException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    Address address = addressList.get(0);
-                    LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                    mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
 
+                    if (addressList != null && !addressList.isEmpty()) {
+                        Address address = addressList.get(0);
+                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                        mMap.addMarker(new MarkerOptions().position(latLng).title(location));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                    } else {
+                        Toast.makeText(UserMapsActivity.this, "Adres bulunamadı: " + location, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(UserMapsActivity.this, "Lütfen geçerli bir adres girin.", Toast.LENGTH_SHORT).show();
                 }
 
-                return false;
+                return true;
             }
 
             @Override
