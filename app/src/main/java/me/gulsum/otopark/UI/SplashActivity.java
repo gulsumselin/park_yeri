@@ -8,6 +8,7 @@ import android.os.Looper;
 import androidx.appcompat.app.AppCompatActivity;
 
 import me.gulsum.otopark.R;
+import me.gulsum.otopark.UI.Screen.OnBoard.OnBoard1;
 
 public class SplashActivity extends AppCompatActivity {
     private static final int SPLASH_DELAY = 3000;
@@ -18,7 +19,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.splash);
 
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            Intent onBoardIntent = new Intent(SplashActivity.this, SelectionActivity.class);
+            Intent onBoardIntent = new Intent(SplashActivity.this, OnBoard1.class);
             startActivity(onBoardIntent);
             finish();
         }, SPLASH_DELAY);

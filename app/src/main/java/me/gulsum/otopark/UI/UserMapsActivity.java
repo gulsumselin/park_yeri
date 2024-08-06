@@ -2,6 +2,7 @@ package me.gulsum.otopark.UI;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -22,6 +23,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,15 +49,18 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
     private SearchView mapSearchView;
     private Location currentLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private List<ParkAlani> parkAlanlari = new ArrayList<>();
 
+    private final static int REQUEST_CODE = 101;
+
+    private Circle currentCircle;
+    private List<ParkAlani> parkAlanlari = new ArrayList<>();
     private String kullaniciAdi;
     private String kullaniciEmail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.maps);
+        setContentView(R.layout.maps_user);
 
         mapSearchView = findViewById(R.id.mapSearch);
 
@@ -65,6 +71,7 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
         getLastLocation();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
         mapSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -87,6 +94,16 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                         mMap.addMarker(new MarkerOptions().position(latLng).title(location));
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+
+                        if (currentCircle != null) {
+                            currentCircle.remove();
+                        }
+
+                        currentCircle = mMap.addCircle(new CircleOptions()
+                                .center(latLng)
+                                .radius(100000)
+                                .strokeColor(0xFF0000FF)
+                                .fillColor(0x220000FF));
                     } else {
                         Toast.makeText(UserMapsActivity.this, "Adres bulunamadı: " + location, Toast.LENGTH_SHORT).show();
                     }
@@ -161,6 +178,14 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
             if (currentLocation != null) {
                 LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
+
+                mMap.addCircle(new CircleOptions()
+                        .center(userLocation)
+                        .radius(100000)
+                        .strokeColor(0xFF0000FF)
+                        .fillColor(0x220000FF));
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, calculateZoomLevel(100000)));
             }
         } else {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
@@ -210,6 +235,11 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
+    private float calculateZoomLevel(double radius) {
+        double scale = radius / 500;
+        return (float) (16 - Math.log(scale) / Math.log(2));
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -217,7 +247,7 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
             } else {
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Permission denied.", Toast.LENGTH_SHORT).show();
             }
         }
     }

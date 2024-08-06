@@ -22,6 +22,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -46,8 +48,12 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
     private SearchView mapSearchView;
     private Location currentLocation;
     private FusedLocationProviderClient fusedLocationProviderClient;
-    private List<ParkAlani> parkAlanlari = new ArrayList<>();
 
+    private final static int REQUEST_CODE = 101;
+
+    private Circle currentCircle;
+
+    private List<ParkAlani> parkAlanlari = new ArrayList<>();
     private String kullaniciAdi;
     private String kullaniciEmail;
 
@@ -65,6 +71,7 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         getLastLocation();
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        assert mapFragment != null;
         mapFragment.getMapAsync(this);
 
         mapSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -86,7 +93,19 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         Address address = addressList.get(0);
                         LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
                         mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 10));
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, calculateZoomLevel(100000)));
+
+
+                        if (currentCircle != null) {
+                            currentCircle.remove();
+                        }
+
+                        currentCircle = mMap.addCircle(new CircleOptions()
+                                .center(latLng)
+                                .radius(100000)
+                                .strokeColor(0xFF0000FF)
+                                .fillColor(0x220000FF));
+
                     } else {
                         Toast.makeText(MapsActivity.this, "Adres bulunamadı: " + location, Toast.LENGTH_SHORT).show();
                     }
@@ -161,6 +180,14 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
             if (currentLocation != null) {
                 LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
                 mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
+
+                mMap.addCircle(new CircleOptions()
+                        .center(userLocation)
+                        .radius(100000)
+                        .strokeColor(0xFF0000FF)
+                        .fillColor(0x220000FF));
+
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, calculateZoomLevel(100000)));
             }
         } else {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
@@ -197,11 +224,9 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
                         intent.putExtra("longitude", parkAlani.lng);
                         intent.putExtra("kontenjan", parkAlani.kontenjan);
                         intent.putExtra("giren", parkAlani.giren);
-                        intent.putExtra("bosYer", parkAlani.bosYer);
                         break;
                     }
                 }
-
                 intent.putExtra("kullanici_adi", kullaniciAdi);
                 intent.putExtra("kullanici_email", kullaniciEmail);
                 startActivity(intent);
@@ -210,14 +235,18 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         });
     }
 
+    private float calculateZoomLevel(double radius) {
+        double scale = radius / 500;
+        return (float) (16 - Math.log(scale) / Math.log(2));
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == FINE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 getLastLocation();
             } else {
-                Toast.makeText(this, "Location permission denied", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Konum izni reddedildi", Toast.LENGTH_SHORT).show();
             }
         }
     }

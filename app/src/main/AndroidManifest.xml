@@ -47,6 +47,7 @@
         <activity android:name=".UI.OdemeActivity" />
         <activity android:name=".UI.Screen.OnBoard.OnBoard1" />
         <activity android:name=".UI.Screen.OnBoard.OnBoard2" />
+        <activity android:name=".UI.Screen.OnBoard.OnBoard3" />
 
 
     </application>
