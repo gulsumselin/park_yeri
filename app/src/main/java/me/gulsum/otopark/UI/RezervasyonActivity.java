@@ -28,37 +28,31 @@ public class RezervasyonActivity extends AppCompatActivity {
         double latitude = getIntent().getDoubleExtra("latitude", 0);
         double longitude = getIntent().getDoubleExtra("longitude", 0);
         int kontenjan = getIntent().getIntExtra("kontenjan", 0);
-        int giren = getIntent().getIntExtra("giren", 0);
         int bosYer = getIntent().getIntExtra("bosYer", 0);
 
-        Intent intent = getIntent();
-        ParkAlani parkAlani = intent.getParcelableExtra("parkAlani");
+        if (parkAdi != null) {
+            parkAdiTextView.setText("Park Alanı: " + parkAdi);
+        }
+        if (bosYer > 0) {
+            bosYerTextView.setText("Boş Yer: " + bosYer);
+        } else {
+            bosYerTextView.setText("Boş Yer: Bilgi Yok");
+        }
 
         showBottomSheetDialog(parkAdi, latitude, longitude, kontenjan, bosYer);
 
         Button signUp = findViewById(R.id.sign_up);
-
-        signUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RezervasyonActivity.this, LoginActivity.class);
-                startActivity(intent);
-
-            }
+        signUp.setOnClickListener(v -> {
+            Intent intent = new Intent(RezervasyonActivity.this, LoginActivity.class);
+            startActivity(intent);
         });
 
         Button register = findViewById(R.id.register);
-
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(RezervasyonActivity.this, RegisterActivity.class);
-                startActivity(intent);
-
-            }
+        register.setOnClickListener(v -> {
+            Intent intent = new Intent(RezervasyonActivity.this, RegisterActivity.class);
+            startActivity(intent);
         });
     }
-
 
     private void showBottomSheetDialog(String parkAdi, double latitude, double longitude, int kontenjan, int bosYer) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
@@ -70,31 +64,37 @@ public class RezervasyonActivity extends AppCompatActivity {
         TextView bottomSheetBosYerTextView = bottomSheetDialog.findViewById(R.id.bosYer);
         Button konumaGitButton = bottomSheetDialog.findViewById(R.id.konuma_git_button);
 
-        if (bottomSheetParkAdiTextView != null)
+        if (bottomSheetParkAdiTextView != null) {
             bottomSheetParkAdiTextView.setText("Park Alanı: " + parkAdi);
-        if (koordinatlarTextView != null)
-            koordinatlarTextView.setText("Koordinatlar: " + latitude + ", " + longitude);
-        if (kontenjanTextView != null) kontenjanTextView.setText("Kontenjan: " + kontenjan);
-        if (bottomSheetBosYerTextView != null)
+        }
+        if (koordinatlarTextView != null) {
+            koordinatlarTextView.setText(String.format("Koordinatlar: %.6f, %.6f", latitude, longitude));
+        }
+        if (kontenjanTextView != null) {
+            kontenjanTextView.setText("Kontenjan: " + kontenjan);
+        }
+        if (bottomSheetBosYerTextView != null) {
             bottomSheetBosYerTextView.setText("Boş Yer: " + bosYer);
+        }
 
         if (konumaGitButton != null) {
-            konumaGitButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(" + parkAdi + ")");
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(mapIntent);
-                    }
+            konumaGitButton.setOnClickListener(v -> {
+                Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(" + parkAdi + ")");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent);
                 }
             });
         }
 
         bottomSheetDialog.setOnDismissListener(dialog -> {
-            parkAdiTextView.setText("Park Alanı: " + parkAdi);
-            bosYerTextView.setText("Boş Yer: " + bosYer);
+            if (parkAdiTextView != null) {
+                parkAdiTextView.setText("Park Alanı: " + parkAdi);
+            }
+            if (bosYerTextView != null) {
+                bosYerTextView.setText("Boş Yer: " + bosYer);
+            }
         });
 
         bottomSheetDialog.show();
