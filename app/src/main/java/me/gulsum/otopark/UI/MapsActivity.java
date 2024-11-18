@@ -28,7 +28,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,17 +42,18 @@ import me.gulsum.otopark.UI.Model.ParkAlani;
 
 public class MapsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
-    private final int FINE_PERMISSION_CODE = 1;
-    private GoogleMap mMap;
-    private SearchView mapSearchView;
-    private Location currentLocation;
-    private FusedLocationProviderClient fusedLocationProviderClient;
+    private static final int LOCATION_PERMISSION_CODE = 1;
+    private static final String TAG = "MapsActivity";
+    private static final int DEFAULT_ZOOM = 15;
+    private static final int DEFAULT_RADIUS = 100000;
 
-    private final static int REQUEST_CODE = 101;
+    private GoogleMap googleMap;
+    private SearchView searchView;
+    private Location currentLocation;
+    private FusedLocationProviderClient locationProviderClient;
 
     private Circle currentCircle;
-
-    private List<ParkAlani> parkAlanlari = new ArrayList<>();
+    private final List<ParkAlani> parkAlanlari = new ArrayList<>();
     private String kullaniciAdi;
     private String kullaniciEmail;
 
@@ -62,177 +62,187 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.maps);
 
-        mapSearchView = findViewById(R.id.mapSearch);
+        initializeUI();
+        loadIntentExtras();
+        loadLastKnownLocation();
+        loadParkAlanlari();
+    }
 
-        kullaniciAdi = getIntent().getStringExtra("kullanici_adi");
-        kullaniciEmail = getIntent().getStringExtra("kullanici_email");
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        getLastLocation();
+    private void initializeUI() {
+        searchView = findViewById(R.id.mapSearch);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-        assert mapFragment != null;
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
-        mapSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
-            public boolean onQueryTextSubmit(String s) {
-                String location = mapSearchView.getQuery().toString();
-
-                if (location != null && !location.isEmpty()) {
-                    Geocoder geocoder = new Geocoder(MapsActivity.this);
-                    List<Address> addressList = null;
-
-                    try {
-                        addressList = geocoder.getFromLocationName(location, 1);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-
-                    if (addressList != null && !addressList.isEmpty()) {
-                        Address address = addressList.get(0);
-                        LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-                        mMap.addMarker(new MarkerOptions().position(latLng).title(location));
-                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, calculateZoomLevel(100000)));
-
-
-                        if (currentCircle != null) {
-                            currentCircle.remove();
-                        }
-
-                        currentCircle = mMap.addCircle(new CircleOptions()
-                                .center(latLng)
-                                .radius(100000)
-                                .strokeColor(0xFF0000FF)
-                                .fillColor(0x220000FF));
-
-                    } else {
-                        Toast.makeText(MapsActivity.this, "Adres bulunamadı: " + location, Toast.LENGTH_SHORT).show();
-                    }
-                } else {
-                    Toast.makeText(MapsActivity.this, "Lütfen geçerli bir adres girin.", Toast.LENGTH_SHORT).show();
-                }
-
+            public boolean onQueryTextSubmit(String query) {
+                handleSearchQuery(query);
                 return true;
             }
 
             @Override
-            public boolean onQueryTextChange(String s) {
+            public boolean onQueryTextChange(String newText) {
                 return false;
             }
         });
-
-        parkAlanlariniOku();
     }
 
-    private void getLastLocation() {
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
+    private void loadIntentExtras() {
+        kullaniciAdi = getIntent().getStringExtra("kullanici_adi");
+        kullaniciEmail = getIntent().getStringExtra("kullanici_email");
+    }
+
+    private void loadLastKnownLocation() {
+        locationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_CODE);
             return;
         }
 
-        Task<Location> task = fusedLocationProviderClient.getLastLocation();
-        task.addOnSuccessListener(new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    currentLocation = location;
-                    Log.d("MapsActivity", "Current location found: " + currentLocation.toString());
-                    SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-                    mapFragment.getMapAsync(MapsActivity.this);
-                } else {
-                    Log.d("MapsActivity", "Current location is null");
-                }
+        locationProviderClient.getLastLocation().addOnSuccessListener(location -> {
+            if (location != null) {
+                currentLocation = location;
+                Log.d(TAG, "Current location found: " + currentLocation.toString());
+            } else {
+                Log.w(TAG, "Current location is null");
             }
         });
     }
 
-    private void parkAlanlariniOku() {
-        try {
-            InputStream is = getResources().openRawResource(R.raw.park_alanlari);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            String json = new String(buffer, StandardCharsets.UTF_8);
 
-            JSONArray jsonArray = new JSONArray(json);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject obj = jsonArray.getJSONObject(i);
-                String name = obj.getString("name");
-                double lat = obj.getDouble("lat");
-                double lng = obj.getDouble("lng");
-                int kontenjan = obj.getInt("kontenjan");
-                int giren = obj.getInt("giren");
-                parkAlanlari.add(new ParkAlani(name, lat, lng, kontenjan, giren));
+
+    private void loadParkAlanlari() {
+        try (InputStream is = getResources().openRawResource(R.raw.park_alanlari)) {
+            byte[] buffer = new byte[is.available()];
+            is.read(buffer);
+            String json = new String(buffer, StandardCharsets.UTF_8);
+            parseParkAlanlariJSON(json);
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading park alanlari: " + e.getMessage(), e);
+        }
+    }
+
+
+    private void parseParkAlanlariJSON(String json) throws Exception {
+        JSONArray jsonArray = new JSONArray(json);
+        for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject obj = jsonArray.getJSONObject(i);
+            parkAlanlari.add(new ParkAlani(
+                    obj.getString("name"),
+                    obj.getDouble("lat"),
+                    obj.getDouble("lng"),
+                    obj.getInt("kontenjan"),
+                    obj.getInt("giren")
+            ));
+        }
+    }
+
+
+    private void handleSearchQuery(String location) {
+        if (location == null || location.isEmpty()) {
+            Toast.makeText(this, "Lütfen geçerli bir adres girin.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        Geocoder geocoder = new Geocoder(this);
+        try {
+            List<Address> addressList = geocoder.getFromLocationName(location, 1);
+            if (addressList != null && !addressList.isEmpty()) {
+                Address address = addressList.get(0);
+                LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+                addMarkerAndCircle(latLng, location);
+            } else {
+                Toast.makeText(this, "Adres bulunamadı: " + location, Toast.LENGTH_SHORT).show();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.e(TAG, "Error geocoding location: " + location, e);
         }
+    }
+
+    private void addMarkerAndCircle(LatLng latLng, String title) {
+        googleMap.addMarker(new MarkerOptions().position(latLng).title(title));
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, calculateZoomLevel(DEFAULT_RADIUS)));
+
+        if (currentCircle != null) {
+            currentCircle.remove();
+        }
+
+        currentCircle = googleMap.addCircle(new CircleOptions()
+                .center(latLng)
+                .radius(DEFAULT_RADIUS)
+                .strokeColor(0xFF0000FF)
+                .fillColor(0x220000FF));
     }
 
     @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
+    public void onMapReady(@NonNull GoogleMap map) {
+        this.googleMap = map;
+        setupMap();
+        populateMarkers();
+    }
 
+    private void setupMap() {
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mMap.setMyLocationEnabled(true);
+            googleMap.setMyLocationEnabled(true);
+
             if (currentLocation != null) {
                 LatLng userLocation = new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude());
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, 15));
-
-                mMap.addCircle(new CircleOptions()
-                        .center(userLocation)
-                        .radius(100000)
-                        .strokeColor(0xFF0000FF)
-                        .fillColor(0x220000FF));
-
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(userLocation, calculateZoomLevel(100000)));
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(userLocation, DEFAULT_ZOOM));
+                addCircle(userLocation, DEFAULT_RADIUS);
             }
         } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, FINE_PERMISSION_CODE);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_CODE);
         }
 
-        UiSettings uiSettings = mMap.getUiSettings();
+        UiSettings uiSettings = googleMap.getUiSettings();
         uiSettings.setZoomControlsEnabled(true);
         uiSettings.setMyLocationButtonEnabled(true);
-        uiSettings.setScrollGesturesEnabled(true);
-        uiSettings.setZoomGesturesEnabled(true);
-        uiSettings.setTiltGesturesEnabled(true);
-        uiSettings.setRotateGesturesEnabled(true);
+    }
 
+    private void populateMarkers() {
         for (ParkAlani parkAlani : parkAlanlari) {
             LatLng position = new LatLng(parkAlani.lat, parkAlani.lng);
-            MarkerOptions options = (new MarkerOptions().position(position).title(parkAlani.name));
-            options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-            mMap.addMarker(options);
+            googleMap.addMarker(new MarkerOptions()
+                    .position(position)
+                    .title(parkAlani.name)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         }
 
-        if (!parkAlanlari.isEmpty() && currentLocation == null) {
-            LatLng firstLocation = new LatLng(parkAlanlari.get(0).lat, parkAlanlari.get(0).lng);
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(firstLocation, 10));
-        }
-
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Intent intent = new Intent(MapsActivity.this, RezervasyonActivity.class);
-                intent.putExtra("park_adi", marker.getTitle());
-                for (ParkAlani parkAlani : parkAlanlari) {
-                    if (parkAlani.name.equals(marker.getTitle())) {
-                        intent.putExtra("latitude", parkAlani.lat);
-                        intent.putExtra("longitude", parkAlani.lng);
-                        intent.putExtra("kontenjan", parkAlani.kontenjan);
-                        intent.putExtra("giren", parkAlani.giren);
-                        break;
-                    }
-                }
-                intent.putExtra("kullanici_adi", kullaniciAdi);
-                intent.putExtra("kullanici_email", kullaniciEmail);
-                startActivity(intent);
-                return false;
-            }
+        googleMap.setOnMarkerClickListener(marker -> {
+            openReservationActivity(marker);
+            return true;
         });
+    }
+
+
+
+    private void openReservationActivity(Marker marker) {
+        Intent intent = new Intent(this, RezervasyonActivity.class);
+        intent.putExtra("park_adi", marker.getTitle());
+        for (ParkAlani parkAlani : parkAlanlari) {
+            if (parkAlani.name.equals(marker.getTitle())) {
+                intent.putExtra("latitude", parkAlani.lat);
+                intent.putExtra("longitude", parkAlani.lng);
+                intent.putExtra("kontenjan", parkAlani.kontenjan);
+                intent.putExtra("giren", parkAlani.giren);
+                intent.putExtra("bosYer", parkAlani.bosYer);
+                break;
+            }
+        }
+        intent.putExtra("kullanici_adi", kullaniciAdi);
+        intent.putExtra("kullanici_email", kullaniciEmail);
+        startActivity(intent);
+    }
+
+    private void addCircle(LatLng center, double radius) {
+        googleMap.addCircle(new CircleOptions()
+                .center(center)
+                .radius(radius)
+                .strokeColor(0xFF0000FF)
+                .fillColor(0x220000FF));
     }
 
     private float calculateZoomLevel(double radius) {
@@ -242,11 +252,11 @@ public class MapsActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == FINE_PERMISSION_CODE) {
+        if (requestCode == LOCATION_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                getLastLocation();
+                loadLastKnownLocation();
             } else {
-                Toast.makeText(this, "Konum izni reddedildi", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Konum izinleri reddedildi.", Toast.LENGTH_SHORT).show();
             }
         }
     }
