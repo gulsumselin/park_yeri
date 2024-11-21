@@ -8,11 +8,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.gson.Gson;
 
 import me.gulsum.otopark.R;
+import me.gulsum.otopark.model.RegisterRequest;
+import me.gulsum.otopark.model.RegisterResponse;
+import me.gulsum.otopark.network.ApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -49,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
     private void registerUser() {
         String name = editTextName.getText().toString();
         String email = editTextEmail.getText().toString();
-        String number = editTextPhone.getText().toString();
+        String phone = editTextPhone.getText().toString();
         String password = editTextPassword.getText().toString();
         String carPlate = editTextCarPlate.getText().toString();
         String carType = spinnerCarType.getSelectedItem().toString();
@@ -59,17 +68,51 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        User user = new User(name, email, number, password, carPlate, carType);
-        saveUser(user);
+        // Simple email validation
+        if (!email.contains("@")) {
+            Toast.makeText(this, "Geçersiz email adresi.", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
-        Toast.makeText(this, "Kayıt başarılı!", Toast.LENGTH_SHORT).show();
+        // Create register request object
+        RegisterRequest registerRequest = new RegisterRequest(name, email, phone, password, carPlate, carType);
 
-        Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
-        startActivity(intent);
-        finish();
+        // Retrofit instance
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:3000") // Update with actual backend URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        ApiService apiService = retrofit.create(ApiService.class);
+        Call<RegisterResponse> call = apiService.registerUser(registerRequest);
+
+        // Call API and handle response
+        call.enqueue(new Callback<RegisterResponse>() {
+            @Override
+            public void onResponse(Call<RegisterResponse> call, Response<RegisterResponse> response) {
+                if (response.isSuccessful()) {
+                    // Save user details to SharedPreferences after successful registration
+                    RegisterResponse registerResponse = response.body();
+                    if (registerResponse != null) {
+                        saveUser(registerResponse);
+                    }
+                    Toast.makeText(RegisterActivity.this, "Kayıt başarılı!", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(RegisterActivity.this, "Kayıt işlemi başarısız.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RegisterResponse> call, Throwable t) {
+                Toast.makeText(RegisterActivity.this, "Bir hata oluştu.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    private void saveUser(User user) {
+    private void saveUser(RegisterResponse user) {
         Gson gson = new Gson();
         SharedPreferences.Editor editor = sharedPreferences.edit();
 

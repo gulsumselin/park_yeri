@@ -25,5 +25,6 @@
         <item>210</item>
         <item>140</item>
     </integer-array>
+    <string name="title_activity_maps">MapsActivity</string>
 
 </resources>

@@ -4,7 +4,6 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -16,74 +15,86 @@
             android:layout_height="wrap_content"
             android:text="Profil"
             android:layout_gravity="center"
-            android:textSize="30sp">
-
-        </TextView>
+            android:textSize="30sp"/>
 
         <TextView
             android:id="@+id/textViewUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Kullanıcı Adı: "
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/textViewEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="E-posta: "
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/textViewPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Telefon Numarası: "
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/textViewCarPlate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Araç Plakası: "
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
 
         <TextView
             android:id="@+id/textViewCarType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Araç Tipi: "
-            android:textSize="18sp" />
+            android:textSize="18sp"/>
+
+        <!-- Geçmiş Park Yeri Bilgileri Başlığı -->
+        <TextView
+            android:id="@+id/textViewHistoryTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Geçmiş Park Yeri Bilgileri"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"/>
+
+        <!-- Geçmiş Park Yeri Bilgileri Listesi -->
+        <TextView
+            android:id="@+id/textViewParkingHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Henüz park edilmiş bir yer bulunmamaktadır."
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"/>
 
         <Button
             android:id="@+id/buttonChangePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="50dp"
-            android:text="Şifre Değiştir" />
+            android:text="Şifre Değiştir"/>
 
         <Button
             android:id="@+id/buttonUpdateProfile"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Profili Güncelle" />
+            android:text="Profili Güncelle"/>
 
         <Button
             android:id="@+id/buttonLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Çıkış Yap" />
+            android:text="Çıkış Yap"/>
 
         <Button
             android:id="@+id/konuma_git_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Otopark Ara"/>
-
     </LinearLayout>
-
-
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

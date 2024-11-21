@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -21,6 +23,9 @@ public class OdemeActivity extends AppCompatActivity {
     private TextView parkKontenjanTextView;
     private TextView priceValueTextView;
     private EditText editTextHours;
+    private Button PaymentButton;
+
+    private double totalPrice = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +38,7 @@ public class OdemeActivity extends AppCompatActivity {
         priceValueTextView = findViewById(R.id.price_value);
         carTypeSpinner = findViewById(R.id.spinnerCarType);
         editTextHours = findViewById(R.id.editTextHours);
+        PaymentButton = findViewById(R.id.confirm_payment_button);
 
         Intent intent = getIntent();
         String kullaniciAdi = intent.getStringExtra("kullanici_adi");
@@ -76,8 +82,29 @@ public class OdemeActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(android.text.Editable s) {}
         });
+
+        PaymentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Park bilgilerini ve ödeme detaylarını ProfileActivity'ye gönder
+                Intent intent = new Intent(OdemeActivity.this, ProfileActivity.class);
+
+                // Ödeme detaylarını ve park bilgilerini ekle
+                intent.putExtra("park_adi", parkAdi); // Park adı
+                intent.putExtra("bosYer", bosYer); // Boş yer sayısı
+                intent.putExtra("kontenjan", kontenjan); // Kontenjan
+                intent.putExtra("totalPrice", totalPrice); // Ödeme tutarı
+
+                // ProfileActivity'ye git
+                startActivity(intent);
+
+                // Toast mesajı göster
+                Toast.makeText(OdemeActivity.this, "Ödeme talebi alındı", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+    // Fiyatı güncelleyen metod
     private void updatePrice() {
         int[] prices = getResources().getIntArray(R.array.car_prices);
         int position = carTypeSpinner.getSelectedItemPosition();
@@ -87,7 +114,7 @@ public class OdemeActivity extends AppCompatActivity {
         if (!hoursString.isEmpty()) {
             hours = Double.parseDouble(hoursString);
         }
-        double totalPrice = selectedPricePerHour * hours;
+        totalPrice = selectedPricePerHour * hours;
         priceValueTextView.setText(String.format("%.2f TL", totalPrice));
     }
 }
