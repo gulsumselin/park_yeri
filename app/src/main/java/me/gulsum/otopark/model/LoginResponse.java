@@ -6,7 +6,6 @@ public class LoginResponse {
         private String message;
         private User user;
 
-        // Getter ve Setter metodları
         public String getMessage() {
             return message;
         }

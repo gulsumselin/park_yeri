@@ -1,0 +1,90 @@
+<!-- activity_reservation_details.xml -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/textViewReservationDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rezervasyon Detayları"
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/textViewParkingSpot"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Park Alanı: "
+        android:textSize="16sp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/textViewStartTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Başlangıç: "
+        android:textSize="16sp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/textViewEndTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Bitiş: "
+        android:textSize="16sp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/textViewPaymentDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ödeme Detayları"
+        android:textSize="18sp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/textViewParkName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Park Alanı: "
+        android:textSize="16sp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/textViewPrice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fiyat: "
+        android:textSize="16sp"
+        android:paddingBottom="8dp"/>
+
+    <EditText
+        android:id="@+id/editTextReservationId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Rezervasyon ID'si"
+        android:inputType="text" />
+
+
+    <Button
+        android:id="@+id/buttonCancelReservation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rezervasyonu İptal Et"
+        android:layout_marginTop="20dp"
+        android:layout_gravity="center" />
+
+    <Button
+        android:id="@+id/buttonBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Geri"
+        android:layout_marginTop="20dp"
+        android:layout_marginStart="5dp" />
+
+
+
+</LinearLayout>

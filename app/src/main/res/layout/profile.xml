@@ -1,100 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Profil Başlığı -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Profil"
             android:layout_gravity="center"
-            android:textSize="30sp"/>
+            android:textSize="30sp"
+            android:paddingBottom="16dp"
+            android:textStyle="bold" />
 
+        <!-- Kullanıcı Bilgileri -->
         <TextView
             android:id="@+id/textViewUsername"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Kullanıcı Adı: "
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:paddingBottom="8dp" />
 
         <TextView
             android:id="@+id/textViewEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="E-posta: "
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:paddingBottom="8dp" />
 
         <TextView
             android:id="@+id/textViewPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Telefon Numarası: "
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:paddingBottom="8dp" />
 
         <TextView
             android:id="@+id/textViewCarPlate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Araç Plakası: "
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:paddingBottom="8dp" />
 
         <TextView
             android:id="@+id/textViewCarType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Araç Tipi: "
-            android:textSize="18sp"/>
+            android:textSize="18sp"
+            android:paddingBottom="16dp" />
 
-        <!-- Geçmiş Park Yeri Bilgileri Başlığı -->
-        <TextView
-            android:id="@+id/textViewHistoryTitle"
+        <!-- Butonlar -->
+
+        <Button
+            android:id="@+id/buttonReservation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Geçmiş Park Yeri Bilgileri"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"/>
-
-        <!-- Geçmiş Park Yeri Bilgileri Listesi -->
-        <TextView
-            android:id="@+id/textViewParkingHistory"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Henüz park edilmiş bir yer bulunmamaktadır."
-            android:textSize="16sp"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="8dp"
+            android:text="Rezervasyonları Görüntüle" />
 
         <Button
             android:id="@+id/buttonChangePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:text="Şifre Değiştir"/>
+            android:layout_marginTop="8dp"
+            android:text="Şifre Değiştir" />
 
-        <Button
-            android:id="@+id/buttonUpdateProfile"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Profili Güncelle"/>
 
         <Button
             android:id="@+id/buttonLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Çıkış Yap"/>
+            android:layout_marginTop="8dp"
+            android:text="Çıkış Yap" />
 
         <Button
             android:id="@+id/konuma_git_button"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Otopark Ara"/>
-    </LinearLayout>
+            android:layout_marginTop="8dp"
+            android:text="Otopark Ara" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</ScrollView>

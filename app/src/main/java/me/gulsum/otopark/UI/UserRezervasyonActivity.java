@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,36 +18,49 @@ public class UserRezervasyonActivity extends AppCompatActivity {
 
     private TextView parkAdiTextView;
     private TextView bosYerTextView;
+    private int bosYer; // Dinamik kontrol için boş yer değişkeni
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rezervasyon_user);
 
+        // View bileşenlerini tanımla
         parkAdiTextView = findViewById(R.id.park_adi);
         bosYerTextView = findViewById(R.id.bosYer);
+        Button rezervasyonButton = findViewById(R.id.rezervasyon);
 
+        // Intent ile gelen verileri al
         String parkAdi = getIntent().getStringExtra("park_adi");
         double latitude = getIntent().getDoubleExtra("latitude", 0);
         double longitude = getIntent().getDoubleExtra("longitude", 0);
         int kontenjan = getIntent().getIntExtra("kontenjan", 0);
-        int bosYer = getIntent().getIntExtra("bosYer", 0);
+        bosYer = getIntent().getIntExtra("bosYer", 0);
         String kullaniciAdi = getIntent().getStringExtra("kullanici_adi");
         String kullaniciEmail = getIntent().getStringExtra("kullanici_email");
 
+        // Gelen verileri UI'da göster
         if (parkAdi != null) {
             parkAdiTextView.setText("Park Alanı: " + parkAdi);
         }
-        if (bosYer != 0) {
+        if (bosYer > 0) {
             bosYerTextView.setText("Boş Yer: " + bosYer);
+        } else {
+            bosYerTextView.setText("Boş Yer: Yok");
+            rezervasyonButton.setEnabled(false); // Rezervasyon butonunu devre dışı bırak
         }
 
+        // Bottom Sheet gösterimi
         showBottomSheetDialog(parkAdi, latitude, longitude, kontenjan, bosYer);
 
-        Button rezervasyonButton = findViewById(R.id.rezervasyon);
-        rezervasyonButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        // Rezervasyon yapma işlemi
+        rezervasyonButton.setOnClickListener(v -> {
+            if (bosYer > 0) {
+                bosYer--; // Rezervasyon sonrası boş yer sayısını azalt
+                bosYerTextView.setText("Boş Yer: " + bosYer);
+                Toast.makeText(UserRezervasyonActivity.this, "Rezervasyon başarılı!", Toast.LENGTH_SHORT).show();
+
+
                 Intent intent = new Intent(UserRezervasyonActivity.this, OdemeActivity.class);
                 intent.putExtra("kullanici_adi", kullaniciAdi);
                 intent.putExtra("kullanici_email", kullaniciEmail);
@@ -55,8 +69,10 @@ public class UserRezervasyonActivity extends AppCompatActivity {
                 intent.putExtra("kontenjan", kontenjan);
                 intent.putExtra("latitude", latitude);
                 intent.putExtra("longitude", longitude);
-                intent.putExtra("price", 50.00);
+                intent.putExtra("price", 50.00); // Sabit fiyat
                 startActivity(intent);
+            } else {
+                Toast.makeText(UserRezervasyonActivity.this, "Boş yer kalmadı!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -65,6 +81,7 @@ public class UserRezervasyonActivity extends AppCompatActivity {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet);
 
+        // Bottom Sheet içeriğini tanımla
         TextView bottomSheetParkAdiTextView = bottomSheetDialog.findViewById(R.id.park_adi);
         TextView koordinatlarTextView = bottomSheetDialog.findViewById(R.id.koordinatlar);
         TextView kontenjanTextView = bottomSheetDialog.findViewById(R.id.kontenjan);
@@ -85,27 +102,15 @@ public class UserRezervasyonActivity extends AppCompatActivity {
         }
 
         if (konumaGitButton != null) {
-            konumaGitButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(" + parkAdi + ")");
-                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
-                    mapIntent.setPackage("com.google.android.apps.maps");
-                    if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                        startActivity(mapIntent);
-                    }
+            konumaGitButton.setOnClickListener(v -> {
+                Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(" + parkAdi + ")");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                if (mapIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(mapIntent); // Haritayı başlat
                 }
             });
         }
-
-        bottomSheetDialog.setOnDismissListener(dialog -> {
-            if (parkAdiTextView != null) {
-                parkAdiTextView.setText("Park Alanı: " + parkAdi);
-            }
-            if (bosYerTextView != null) {
-                bosYerTextView.setText("Boş Yer: " + bosYer);
-            }
-        });
 
         bottomSheetDialog.show();
     }

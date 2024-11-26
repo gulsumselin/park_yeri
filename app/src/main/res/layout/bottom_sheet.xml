@@ -17,7 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:text="REZERVASYON için ekrana tıklayıp GİRİŞ yapınız"
+            android:text="REZERVASYON için ekrana tıklayın"
             android:textColor="@color/white"
             android:textSize="18sp">
 
