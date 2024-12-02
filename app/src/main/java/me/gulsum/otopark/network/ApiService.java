@@ -1,5 +1,6 @@
 package me.gulsum.otopark.network;
 
+<<<<<<< HEAD
 import java.util.List;
 
 import me.gulsum.otopark.UI.Model.Payment;
@@ -61,3 +62,22 @@ public interface ApiService {
 
 
 }
+=======
+import me.gulsum.otopark.model.LoginRequest;
+import me.gulsum.otopark.model.LoginResponse;
+import me.gulsum.otopark.model.RegisterRequest;
+import me.gulsum.otopark.model.RegisterResponse;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
+
+public interface ApiService {
+
+    @POST("/register")
+    Call<RegisterResponse> registerUser(@Body RegisterRequest registerRequest);
+
+        @POST("/login")
+        Call<LoginResponse> loginUser(@Body LoginRequest loginRequest);
+    }
+
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5

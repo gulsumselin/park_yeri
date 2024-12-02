@@ -2,7 +2,12 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
+<<<<<<< HEAD
     android:layout_height="match_parent">
+=======
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,9 +21,13 @@
             android:layout_height="wrap_content"
             android:text="Profil"
             android:layout_gravity="center"
+<<<<<<< HEAD
             android:textSize="30sp"
             android:paddingBottom="16dp"
             android:textStyle="bold" />
+=======
+            android:textSize="30sp"/>
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
         <!-- Kullanıcı Bilgileri -->
         <TextView
@@ -26,38 +35,55 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Kullanıcı Adı: "
+<<<<<<< HEAD
             android:textSize="18sp"
             android:paddingBottom="8dp" />
+=======
+            android:textSize="18sp"/>
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
         <TextView
             android:id="@+id/textViewEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="E-posta: "
+<<<<<<< HEAD
             android:textSize="18sp"
             android:paddingBottom="8dp" />
+=======
+            android:textSize="18sp"/>
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
         <TextView
             android:id="@+id/textViewPhone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Telefon Numarası: "
+<<<<<<< HEAD
             android:textSize="18sp"
             android:paddingBottom="8dp" />
+=======
+            android:textSize="18sp"/>
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
         <TextView
             android:id="@+id/textViewCarPlate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Araç Plakası: "
+<<<<<<< HEAD
             android:textSize="18sp"
             android:paddingBottom="8dp" />
+=======
+            android:textSize="18sp"/>
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
         <TextView
             android:id="@+id/textViewCarType"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Araç Tipi: "
+<<<<<<< HEAD
             android:textSize="18sp"
             android:paddingBottom="16dp" />
 
@@ -69,28 +95,72 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Rezervasyonları Görüntüle" />
+=======
+            android:textSize="18sp"/>
+
+        <!-- Geçmiş Park Yeri Bilgileri Başlığı -->
+        <TextView
+            android:id="@+id/textViewHistoryTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Geçmiş Park Yeri Bilgileri"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp"/>
+
+        <!-- Geçmiş Park Yeri Bilgileri Listesi -->
+        <TextView
+            android:id="@+id/textViewParkingHistory"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Henüz park edilmiş bir yer bulunmamaktadır."
+            android:textSize="16sp"
+            android:layout_marginTop="10dp"/>
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
         <Button
             android:id="@+id/buttonChangePassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:layout_marginTop="8dp"
             android:text="Şifre Değiştir" />
 
+=======
+            android:layout_marginTop="50dp"
+            android:text="Şifre Değiştir"/>
+
+        <Button
+            android:id="@+id/buttonUpdateProfile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Profili Güncelle"/>
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
         <Button
             android:id="@+id/buttonLogout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:layout_marginTop="8dp"
             android:text="Çıkış Yap" />
+=======
+            android:text="Çıkış Yap"/>
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
         <Button
             android:id="@+id/konuma_git_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:layout_marginTop="8dp"
             android:text="Otopark Ara" />
 
     </LinearLayout>
 </ScrollView>
+=======
+            android:text="Otopark Ara"/>
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5

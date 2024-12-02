@@ -52,7 +52,10 @@
         <activity android:name=".UI.ProfileActivity" />
         <activity android:name=".UI.UserMapsActivity" />
         <activity android:name=".UI.UserRezervasyonActivity" />
+<<<<<<< HEAD
         <activity android:name=".UI.Screen.OnBoard.ReservationDetailsActivity" />
+=======
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
         <activity android:name=".UI.SelectionActivity" />
         <activity android:name=".UI.MapsActivity" />
         <activity android:name=".UI.RezervasyonActivity" />

@@ -2,7 +2,13 @@ package me.gulsum.otopark.UI;
 
 import android.content.Intent;
 import android.os.Bundle;
+<<<<<<< HEAD
 import android.util.Log;
+=======
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -26,6 +32,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class OdemeActivity extends AppCompatActivity {
 
     private TextView parkAdiTextView;
+<<<<<<< HEAD
     private TextView priceTextView;
     private EditText cardNumberEditText;
     private EditText cardExpiryEditText;
@@ -37,12 +44,22 @@ public class OdemeActivity extends AppCompatActivity {
     private int kontenjan;
     private int bosYer;
     private double price;
+=======
+    private TextView bosYerTextView;
+    private TextView parkKontenjanTextView;
+    private TextView priceValueTextView;
+    private EditText editTextHours;
+    private Button PaymentButton;
+
+    private double totalPrice = 0.0;
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.odeme);
 
+<<<<<<< HEAD
         // View bileşenlerini tanımla
         parkAdiTextView = findViewById(R.id.park_name);
         priceTextView = findViewById(R.id.payment);
@@ -50,6 +67,15 @@ public class OdemeActivity extends AppCompatActivity {
         cardExpiryEditText = findViewById(R.id.cardExpiry);
         cardCVVEditText = findViewById(R.id.cardCVV);
         paymentButton = findViewById(R.id.buttonPay);
+=======
+        parkAdiTextView = findViewById(R.id.park_adi);
+        bosYerTextView = findViewById(R.id.bosYer);
+        parkKontenjanTextView = findViewById(R.id.park_kontenjan);
+        priceValueTextView = findViewById(R.id.price_value);
+        carTypeSpinner = findViewById(R.id.spinnerCarType);
+        editTextHours = findViewById(R.id.editTextHours);
+        PaymentButton = findViewById(R.id.confirm_payment_button);
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
 
         // Intent ile gelen verileri al
         userName = getIntent().getStringExtra("user_name");
@@ -78,8 +104,29 @@ public class OdemeActivity extends AppCompatActivity {
                 sendPaymentToAPI(email, cardNumber, cardExpiry, cardCVV);
             }
         });
+
+        PaymentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Park bilgilerini ve ödeme detaylarını ProfileActivity'ye gönder
+                Intent intent = new Intent(OdemeActivity.this, ProfileActivity.class);
+
+                // Ödeme detaylarını ve park bilgilerini ekle
+                intent.putExtra("park_adi", parkAdi); // Park adı
+                intent.putExtra("bosYer", bosYer); // Boş yer sayısı
+                intent.putExtra("kontenjan", kontenjan); // Kontenjan
+                intent.putExtra("totalPrice", totalPrice); // Ödeme tutarı
+
+                // ProfileActivity'ye git
+                startActivity(intent);
+
+                // Toast mesajı göster
+                Toast.makeText(OdemeActivity.this, "Ödeme talebi alındı", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
+<<<<<<< HEAD
     private Retrofit getRetrofitInstance() {
         return new Retrofit.Builder()
                 .baseUrl("http://10.0.2.2:3000/") // Backend URL
@@ -138,5 +185,19 @@ public class OdemeActivity extends AppCompatActivity {
                 Toast.makeText(OdemeActivity.this, "Hata: " + t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+=======
+    // Fiyatı güncelleyen metod
+    private void updatePrice() {
+        int[] prices = getResources().getIntArray(R.array.car_prices);
+        int position = carTypeSpinner.getSelectedItemPosition();
+        double selectedPricePerHour = prices[position];
+        String hoursString = editTextHours.getText().toString();
+        double hours = 0;
+        if (!hoursString.isEmpty()) {
+            hours = Double.parseDouble(hoursString);
+        }
+        totalPrice = selectedPricePerHour * hours;
+        priceValueTextView.setText(String.format("%.2f TL", totalPrice));
+>>>>>>> 9cf18ff20f6e53bc8bfe893cac2c31d39e010fb5
     }
 }
