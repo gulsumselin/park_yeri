@@ -54,8 +54,8 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
 
     private Circle currentCircle;
     private List<ParkAlani> parkAlanlari = new ArrayList<>();
-    private String kullaniciAdi;
-    private String kullaniciEmail;
+    private String userName;
+    private String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,8 +64,8 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
 
         mapSearchView = findViewById(R.id.mapSearch);
 
-        kullaniciAdi = getIntent().getStringExtra("kullanici_adi");
-        kullaniciEmail = getIntent().getStringExtra("kullanici_email");
+        userName = getIntent().getStringExtra("user_name");
+        email = getIntent().getStringExtra("user_email");
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         getLastLocation();
@@ -215,7 +215,7 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Intent intent = new Intent(UserMapsActivity.this, UserRezervasyonActivity.class);
-                intent.putExtra("park_adi", marker.getTitle());
+                intent.putExtra("park_name", marker.getTitle());
                 for (ParkAlani parkAlani : parkAlanlari) {
                     if (parkAlani.name.equals(marker.getTitle())) {
                         intent.putExtra("latitude", parkAlani.lat);
@@ -226,9 +226,8 @@ public class UserMapsActivity extends AppCompatActivity implements OnMapReadyCal
                         break;
                     }
                 }
-
-                intent.putExtra("kullanici_adi", kullaniciAdi);
-                intent.putExtra("kullanici_email", kullaniciEmail);
+                intent.putExtra("user_name", userName);
+                intent.putExtra("user_email", email);
                 startActivity(intent);
                 return false;
             }

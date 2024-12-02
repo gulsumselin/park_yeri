@@ -13,7 +13,7 @@ import me.gulsum.otopark.UI.Model.ParkAlani;
 
 public class RezervasyonActivity extends AppCompatActivity {
 
-    private TextView parkAdiTextView;
+    private TextView parkNameTextView;
     private TextView bosYerTextView;
 
     @Override
@@ -21,17 +21,17 @@ public class RezervasyonActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.rezervasyon);
 
-        parkAdiTextView = findViewById(R.id.park_adi);
+        parkNameTextView = findViewById(R.id.park_name);
         bosYerTextView = findViewById(R.id.bosYer);
 
-        String parkAdi = getIntent().getStringExtra("park_adi");
+        String parkName = getIntent().getStringExtra("park_name");
         double latitude = getIntent().getDoubleExtra("latitude", 0);
         double longitude = getIntent().getDoubleExtra("longitude", 0);
         int kontenjan = getIntent().getIntExtra("kontenjan", 0);
         int bosYer = getIntent().getIntExtra("bosYer", 0);
 
-        if (parkAdi != null) {
-            parkAdiTextView.setText("Park Alanı: " + parkAdi);
+        if (parkName != null) {
+            parkNameTextView.setText("Park Alanı: " + parkName);
         }
         if (bosYer > 0) {
             bosYerTextView.setText("Boş Yer: " + bosYer);
@@ -39,7 +39,7 @@ public class RezervasyonActivity extends AppCompatActivity {
             bosYerTextView.setText("Boş Yer: Bilgi Yok");
         }
 
-        showBottomSheetDialog(parkAdi, latitude, longitude, kontenjan, bosYer);
+        showBottomSheetDialog(parkName, latitude, longitude, kontenjan, bosYer);
 
         Button signUp = findViewById(R.id.sign_up);
         signUp.setOnClickListener(v -> {
@@ -54,18 +54,18 @@ public class RezervasyonActivity extends AppCompatActivity {
         });
     }
 
-    private void showBottomSheetDialog(String parkAdi, double latitude, double longitude, int kontenjan, int bosYer) {
+    private void showBottomSheetDialog(String parkName, double latitude, double longitude, int kontenjan, int bosYer) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet);
 
-        TextView bottomSheetParkAdiTextView = bottomSheetDialog.findViewById(R.id.park_adi);
+        TextView bottomSheetParkNameTextView = bottomSheetDialog.findViewById(R.id.park_name);
         TextView koordinatlarTextView = bottomSheetDialog.findViewById(R.id.koordinatlar);
         TextView kontenjanTextView = bottomSheetDialog.findViewById(R.id.kontenjan);
         TextView bottomSheetBosYerTextView = bottomSheetDialog.findViewById(R.id.bosYer);
         Button konumaGitButton = bottomSheetDialog.findViewById(R.id.konuma_git_button);
 
-        if (bottomSheetParkAdiTextView != null) {
-            bottomSheetParkAdiTextView.setText("Park Alanı: " + parkAdi);
+        if (bottomSheetParkNameTextView != null) {
+            bottomSheetParkNameTextView.setText("Park Alanı: " + parkName);
         }
         if (koordinatlarTextView != null) {
             koordinatlarTextView.setText(String.format("Koordinatlar: %.6f, %.6f", latitude, longitude));
@@ -79,7 +79,7 @@ public class RezervasyonActivity extends AppCompatActivity {
 
         if (konumaGitButton != null) {
             konumaGitButton.setOnClickListener(v -> {
-                Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(" + parkAdi + ")");
+                Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(" + parkName + ")");
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
                 if (mapIntent.resolveActivity(getPackageManager()) != null) {
@@ -89,8 +89,8 @@ public class RezervasyonActivity extends AppCompatActivity {
         }
 
         bottomSheetDialog.setOnDismissListener(dialog -> {
-            if (parkAdiTextView != null) {
-                parkAdiTextView.setText("Park Alanı: " + parkAdi);
+            if (parkNameTextView != null) {
+                parkNameTextView.setText("Park Alanı: " + parkName);
             }
             if (bosYerTextView != null) {
                 bosYerTextView.setText("Boş Yer: " + bosYer);

@@ -14,7 +14,7 @@
         android:paddingBottom="8dp"/>
 
     <TextView
-        android:id="@+id/textViewParkingSpot"
+        android:id="@+id/park_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Park Alanı: "
@@ -22,7 +22,7 @@
         android:paddingBottom="8dp"/>
 
     <TextView
-        android:id="@+id/textViewStartTime"
+        android:id="@+id/entryTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Başlangıç: "
@@ -30,31 +30,7 @@
         android:paddingBottom="8dp"/>
 
     <TextView
-        android:id="@+id/textViewEndTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Bitiş: "
-        android:textSize="16sp"
-        android:paddingBottom="8dp"/>
-
-    <TextView
-        android:id="@+id/textViewPaymentDetails"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Ödeme Detayları"
-        android:textSize="18sp"
-        android:paddingBottom="8dp"/>
-
-    <TextView
-        android:id="@+id/textViewParkName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Park Alanı: "
-        android:textSize="16sp"
-        android:paddingBottom="8dp"/>
-
-    <TextView
-        android:id="@+id/textViewPrice"
+        android:id="@+id/payment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Fiyat: "
@@ -62,7 +38,7 @@
         android:paddingBottom="8dp"/>
 
     <EditText
-        android:id="@+id/editTextReservationId"
+        android:id="@+id/ReservationId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Rezervasyon ID'si"

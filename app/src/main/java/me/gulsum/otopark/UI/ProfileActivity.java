@@ -11,7 +11,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import me.gulsum.otopark.R;
 import me.gulsum.otopark.UI.Model.User;
-import me.gulsum.otopark.UI.Screen.OnBoard.ReservationDetailsActivity;
 import me.gulsum.otopark.network.ApiService;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -42,10 +41,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Kayıtlı kullanıcı e-posta bilgisini al
         Intent intent = getIntent();
-        String userEmail = intent.getStringExtra("user_email");
+        String email = intent.getStringExtra("user_email");
 
-        if (userEmail != null) {
-            loadUserProfile(userEmail); // Kullanıcı profilini yükle
+        if (email != null) {
+            loadUserProfile(email); // Kullanıcı profilini yükle
         } else {
             Toast.makeText(this, "Kullanıcı bilgileri bulunamadı.", Toast.LENGTH_SHORT).show();
         }
@@ -61,18 +60,8 @@ public class ProfileActivity extends AppCompatActivity {
         // Otopark ara butonuna tıklama olayı
         konumaGitButton.setOnClickListener(v -> {
             Intent parkSelectionIntent = new Intent(ProfileActivity.this, UserMapsActivity.class);
+            parkSelectionIntent.putExtra("user_email", textViewEmail.getText().toString());
             startActivity(parkSelectionIntent);
-        });
-
-        buttonReservation.setOnClickListener(v -> {
-            Intent reservationIntent = new Intent(ProfileActivity.this, ReservationDetailsActivity.class);
-            // Kullanıcı bilgilerini Intent'e ekle
-            reservationIntent.putExtra("user_email", textViewEmail.getText().toString());
-            reservationIntent.putExtra("user_name", textViewUsername.getText().toString());
-            reservationIntent.putExtra("user_phone", textViewPhone.getText().toString());
-            reservationIntent.putExtra("user_car_plate", textViewCarPlate.getText().toString());
-            reservationIntent.putExtra("user_car_type", textViewCarType.getText().toString());
-            startActivity(reservationIntent);
         });
 
 

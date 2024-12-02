@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 import me.gulsum.otopark.R;
 import me.gulsum.otopark.model.PaymentRequest;
@@ -30,12 +31,9 @@ public class OdemeActivity extends AppCompatActivity {
     private EditText cardExpiryEditText;
     private EditText cardCVVEditText;
     private Button paymentButton;
-
-    private String kullaniciAdi;
-    private String kullaniciEmail;
-    private String parkAdi;
-    private double latitude;
-    private double longitude;
+    private String userName;
+    private String email;
+    private String parkName;
     private int kontenjan;
     private int bosYer;
     private double price;
@@ -43,29 +41,27 @@ public class OdemeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.odeme); // activity_odeme.xml layout dosyasını kullan
+        setContentView(R.layout.odeme);
 
         // View bileşenlerini tanımla
-        parkAdiTextView = findViewById(R.id.park_adi);
-        priceTextView = findViewById(R.id.price_value);
+        parkAdiTextView = findViewById(R.id.park_name);
+        priceTextView = findViewById(R.id.payment);
         cardNumberEditText = findViewById(R.id.cardNumber);
         cardExpiryEditText = findViewById(R.id.cardExpiry);
         cardCVVEditText = findViewById(R.id.cardCVV);
         paymentButton = findViewById(R.id.buttonPay);
 
         // Intent ile gelen verileri al
-        kullaniciAdi = getIntent().getStringExtra("kullanici_adi");
-        kullaniciEmail = getIntent().getStringExtra("kullanici_email");
-        parkAdi = getIntent().getStringExtra("park_adi");
-        latitude = getIntent().getDoubleExtra("latitude", 0);
-        longitude = getIntent().getDoubleExtra("longitude", 0);
+        userName = getIntent().getStringExtra("user_name");
+        email = getIntent().getStringExtra("user_email");
+        parkName = getIntent().getStringExtra("park_name");
         kontenjan = getIntent().getIntExtra("kontenjan", 0);
         bosYer = getIntent().getIntExtra("bosYer", 0);
         price = getIntent().getDoubleExtra("price", 0.00);
 
         // Gelen verileri UI'da göster
-        if (parkAdi != null) {
-            parkAdiTextView.setText("Park Alanı: " + parkAdi);
+        if (parkName != null) {
+            parkAdiTextView.setText("Park Alanı: " + parkName);
         }
         priceTextView.setText("Fiyat: " + price + " TL");
 
@@ -78,20 +74,10 @@ public class OdemeActivity extends AppCompatActivity {
             if (cardNumber.isEmpty() || cardExpiry.isEmpty() || cardCVV.isEmpty()) {
                 Toast.makeText(OdemeActivity.this, "Lütfen tüm alanları doldurun!", Toast.LENGTH_SHORT).show();
             } else {
-                // Ödeme bilgilerini kaydet veya başka bir işlem yap
-                savePaymentDetails(cardNumber, cardExpiry, cardCVV);
-
-                // API'yi çağırarak ödeme bilgilerini gönder
-                sendPaymentToAPI(cardNumber, cardExpiry, cardCVV);
+                // Ödeme bilgilerini gönder
+                sendPaymentToAPI(email, cardNumber, cardExpiry, cardCVV);
             }
         });
-    }
-
-    // Ödeme bilgilerini kaydetmek için bir metod
-    private void savePaymentDetails(String cardNumber, String cardExpiry, String cardCVV) {
-        // Bu metodda ödeme bilgilerini kaydedebilirsiniz (örneğin, veritabanına veya bir API'ye gönderebilirsiniz)
-        String paymentDetails = "Kart Numarası: " + cardNumber + "\nSon Kullanma Tarihi: " + cardExpiry + "\nCVV: " + cardCVV;
-        Toast.makeText(this, "Ödeme Bilgileri: " + paymentDetails, Toast.LENGTH_LONG).show();
     }
 
     private Retrofit getRetrofitInstance() {
@@ -101,13 +87,17 @@ public class OdemeActivity extends AppCompatActivity {
                 .build();
     }
 
-    // API'ye ödeme bilgilerini gönderme işlemi
-    private void sendPaymentToAPI(String cardNumber, String cardExpiry, String cardCVV) {
-        // Burada Retrofit kullanarak API'yi çağırarak ödeme bilgilerini gönderebilirsiniz.
-        PaymentRequest paymentRequest = new PaymentRequest(cardNumber, cardExpiry, cardCVV, kullaniciAdi, parkAdi, price);
+    private void sendPaymentToAPI(String email, String cardNumber, String cardExpiry, String cardCVV) {
+        // Sistem tarafından oluşturulan ödeme bilgileri
+        long createdAt = System.currentTimeMillis(); // Ödeme tarihi
+        String paymentId = null; // Başlangıçta null, sunucudan alınacak
 
+        // Ödeme isteği oluştur
+        PaymentRequest paymentRequest = new PaymentRequest(
+                email, cardNumber, cardExpiry, cardCVV, paymentId, parkName, price, createdAt
+        );
 
-        // Retrofit API çağrısı yapılırken:
+        // API çağrısı yap
         Retrofit retrofit = getRetrofitInstance();
         ApiService apiService = retrofit.create(ApiService.class);
 
@@ -117,23 +107,25 @@ public class OdemeActivity extends AppCompatActivity {
             public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> response) {
                 if (response.isSuccessful()) {
                     PaymentResponse paymentResponse = response.body();
-                    Toast.makeText(OdemeActivity.this, paymentResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                    if (paymentResponse != null) {
+                        String generatedPaymentId = paymentResponse.getPaymentId(); // Sunucudan dönen paymentId
+                        Toast.makeText(OdemeActivity.this, "Ödeme Başarılı! Payment ID: " + generatedPaymentId, Toast.LENGTH_SHORT).show();
 
-                    // Ödeme başarılı olduğunda
-                    Intent intent = new Intent(OdemeActivity.this, ProfileActivity.class);
-                    intent.putExtra("kullanici_adi", kullaniciAdi);
-                    intent.putExtra("kullanici_email", kullaniciEmail);
-                    intent.putExtra("park_adi", parkAdi);
-                    intent.putExtra("bosYer", bosYer - 1);
-                    intent.putExtra("kontenjan", kontenjan);
-                    startActivity(intent);
-                    finish();
+                        // Başarılı işlem sonrası ProfileActivity'ye geçiş
+                        Intent intent = new Intent(OdemeActivity.this, ProfileActivity.class);
+                        intent.putExtra("user_name", userName);
+                        intent.putExtra("user_email", email);
+                        intent.putExtra("park_name", parkName);
+                        intent.putExtra("bosYer", bosYer - 1);
+                        intent.putExtra("kontenjan", kontenjan);
+                        startActivity(intent);
+                        finish();
+                    }
                 } else {
-                    // Detaylı hata mesajı
                     try {
                         String errorBody = response.errorBody().string();
                         Log.e("PaymentError", "Ödeme işlemi başarısız! Hata: " + errorBody);
-                        Toast.makeText(OdemeActivity.this, "Ödeme işlemi başarısız! Hata: " + errorBody, Toast.LENGTH_LONG).show();
+                        Toast.makeText(OdemeActivity.this, "Hata: " + errorBody, Toast.LENGTH_LONG).show();
                     } catch (IOException e) {
                         e.printStackTrace();
                         Log.e("PaymentError", "Hata: " + e.getMessage());

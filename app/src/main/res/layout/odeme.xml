@@ -7,7 +7,7 @@
 
     <!-- Park Alanı Bilgileri -->
     <TextView
-        android:id="@+id/park_adi"
+        android:id="@+id/park_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Park Alanı: "
@@ -17,7 +17,7 @@
 
     <!-- Fiyat Bilgisi -->
     <TextView
-        android:id="@+id/price_value"
+        android:id="@+id/payment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Fiyat: 50.00 TL"

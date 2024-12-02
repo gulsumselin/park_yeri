@@ -3,7 +3,7 @@ package me.gulsum.otopark.UI;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -13,12 +13,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import me.gulsum.otopark.R;
+import me.gulsum.otopark.model.LoginResponse;
+import me.gulsum.otopark.model.ReservationRequest;
+import me.gulsum.otopark.model.ReservationResponse;
+import me.gulsum.otopark.network.ApiService;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UserRezervasyonActivity extends AppCompatActivity {
 
-    private TextView parkAdiTextView;
+    private static final String TAG = "UserRezervasyonActivity";
+    private TextView parkNameTextView;
     private TextView bosYerTextView;
-    private int bosYer; // Dinamik kontrol için boş yer değişkeni
+    private int bosYer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,22 +36,27 @@ public class UserRezervasyonActivity extends AppCompatActivity {
         setContentView(R.layout.rezervasyon_user);
 
         // View bileşenlerini tanımla
-        parkAdiTextView = findViewById(R.id.park_adi);
+        parkNameTextView = findViewById(R.id.park_name);
         bosYerTextView = findViewById(R.id.bosYer);
         Button rezervasyonButton = findViewById(R.id.rezervasyon);
 
         // Intent ile gelen verileri al
-        String parkAdi = getIntent().getStringExtra("park_adi");
+        String parkName = getIntent().getStringExtra("park_name");
         double latitude = getIntent().getDoubleExtra("latitude", 0);
         double longitude = getIntent().getDoubleExtra("longitude", 0);
         int kontenjan = getIntent().getIntExtra("kontenjan", 0);
         bosYer = getIntent().getIntExtra("bosYer", 0);
-        String kullaniciAdi = getIntent().getStringExtra("kullanici_adi");
-        String kullaniciEmail = getIntent().getStringExtra("kullanici_email");
+        String userName = getIntent().getStringExtra("user_name");
+        String entryTime = getIntent().getStringExtra("entry_time");
+        double payment = getIntent().getDoubleExtra("payment", 0);
+        String email = getIntent().getStringExtra("user_email");
+        String reservationId = getIntent().getStringExtra("reservation_id");
+
+        Log.d(TAG, "Intent verileri alındı: parkName=" + parkName + ", bosYer=" + bosYer);
 
         // Gelen verileri UI'da göster
-        if (parkAdi != null) {
-            parkAdiTextView.setText("Park Alanı: " + parkAdi);
+        if (parkName!= null) {
+            parkNameTextView.setText("Park Alanı: " + parkName);
         }
         if (bosYer > 0) {
             bosYerTextView.setText("Boş Yer: " + bosYer);
@@ -51,64 +66,107 @@ public class UserRezervasyonActivity extends AppCompatActivity {
         }
 
         // Bottom Sheet gösterimi
-        showBottomSheetDialog(parkAdi, latitude, longitude, kontenjan, bosYer);
+        showBottomSheetDialog(parkName, latitude, longitude, kontenjan, bosYer);
 
-        // Rezervasyon yapma işlemi
         rezervasyonButton.setOnClickListener(v -> {
-            if (bosYer > 0) {
-                bosYer--; // Rezervasyon sonrası boş yer sayısını azalt
-                bosYerTextView.setText("Boş Yer: " + bosYer);
-                Toast.makeText(UserRezervasyonActivity.this, "Rezervasyon başarılı!", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "Rezervasyon butonuna tıklandı.");
 
+            ReservationRequest reservationRequest = new ReservationRequest(
+                    email, parkName, reservationId, entryTime, payment
+            );
 
-                Intent intent = new Intent(UserRezervasyonActivity.this, OdemeActivity.class);
-                intent.putExtra("kullanici_adi", kullaniciAdi);
-                intent.putExtra("kullanici_email", kullaniciEmail);
-                intent.putExtra("park_adi", parkAdi);
-                intent.putExtra("bosYer", bosYer);
-                intent.putExtra("kontenjan", kontenjan);
-                intent.putExtra("latitude", latitude);
-                intent.putExtra("longitude", longitude);
-                intent.putExtra("price", 50.00); // Sabit fiyat
-                startActivity(intent);
+            if (email != null && !email.isEmpty()) {
+                saveRezervasyonToDatabase(reservationRequest);
+
+                if (bosYer > 0) {
+                    bosYer--;
+                    bosYerTextView.setText("Boş Yer: " + bosYer);
+
+                    Intent intent = new Intent(UserRezervasyonActivity.this, OdemeActivity.class);
+                    intent.putExtra("user_name", userName);
+                    intent.putExtra("email", email);
+                    intent.putExtra("reservation_id", reservationId);
+                    intent.putExtra("park_name", parkName);
+                    intent.putExtra("bosYer", bosYer);
+                    intent.putExtra("kontenjan", kontenjan);
+                    intent.putExtra("price", 50.00);
+                    startActivity(intent);
+
+                    Toast.makeText(UserRezervasyonActivity.this, "Rezervasyon başarılı!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(UserRezervasyonActivity.this, "Boş yer kalmadı!", Toast.LENGTH_SHORT).show();
+                }
             } else {
-                Toast.makeText(UserRezervasyonActivity.this, "Boş yer kalmadı!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Kullanıcı bilgileri bulunamadı.", Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Kullanıcı emaili bulunamadı.");
             }
         });
     }
 
-    private void showBottomSheetDialog(String parkAdi, double latitude, double longitude, int kontenjan, int bosYer) {
+    private Retrofit getRetrofitInstance() {
+        return new Retrofit.Builder()
+                .baseUrl("http://10.0.2.2:3000/") // Backend URL
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+
+
+    private void saveRezervasyonToDatabase(ReservationRequest reservationRequest) {
+        ApiService apiService = getRetrofitInstance().create(ApiService.class);
+        Call<ReservationResponse> call = apiService.saveReservationToDatabase(reservationRequest);
+
+        Log.d(TAG, "Rezervasyon kaydetme isteği gönderiliyor: " + reservationRequest);
+
+        call.enqueue(new Callback<ReservationResponse>() {
+            @Override
+            public void onResponse(Call<ReservationResponse> call, Response<ReservationResponse> response) {
+                if (response.isSuccessful()) {
+                    Log.d(TAG, "Rezervasyon kaydedildi: " + response.body());
+                    Toast.makeText(UserRezervasyonActivity.this, "Rezervasyon başarıyla kaydedildi!", Toast.LENGTH_SHORT).show();
+                } else {
+                    Log.e(TAG, "Rezervasyon kaydetme hatası: " + response.errorBody());
+                    Toast.makeText(UserRezervasyonActivity.this, "Hata: " + response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ReservationResponse> call, Throwable t) {
+                Log.e(TAG, "Sunucuya bağlanılamadı: ", t);
+                Toast.makeText(UserRezervasyonActivity.this, "Sunucuya bağlanılamadı: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
+    }
+
+    private void showBottomSheetDialog(String parkName, double latitude, double longitude, int kontenjan, int bosYer) {
         final BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(this, R.style.BottomSheetDialogTheme);
         bottomSheetDialog.setContentView(R.layout.bottom_sheet);
 
-        // Bottom Sheet içeriğini tanımla
-        TextView bottomSheetParkAdiTextView = bottomSheetDialog.findViewById(R.id.park_adi);
+        TextView bottomSheetParkAdiTextView = bottomSheetDialog.findViewById(R.id.park_name);
         TextView koordinatlarTextView = bottomSheetDialog.findViewById(R.id.koordinatlar);
         TextView kontenjanTextView = bottomSheetDialog.findViewById(R.id.kontenjan);
-        TextView bottomSheetBosYerTextView = bottomSheetDialog.findViewById(R.id.bosYer);
-        Button konumaGitButton = bottomSheetDialog.findViewById(R.id.konuma_git_button);
+        TextView bosYerTextView = bottomSheetDialog.findViewById(R.id.bosYer);
 
         if (bottomSheetParkAdiTextView != null) {
-            bottomSheetParkAdiTextView.setText("Park Alanı: " + parkAdi);
+            bottomSheetParkAdiTextView.setText(parkName);
         }
         if (koordinatlarTextView != null) {
-            koordinatlarTextView.setText(String.format("Koordinatlar: %.6f, %.6f", latitude, longitude));
+            koordinatlarTextView.setText("Latitude: " + latitude + " | Longitude: " + longitude);
         }
         if (kontenjanTextView != null) {
             kontenjanTextView.setText("Kontenjan: " + kontenjan);
         }
-        if (bottomSheetBosYerTextView != null) {
-            bottomSheetBosYerTextView.setText("Boş Yer: " + bosYer);
+        if (bosYerTextView != null) {
+            bosYerTextView.setText("Boş Yer: " + bosYer);
         }
 
+        Button konumaGitButton = bottomSheetDialog.findViewById(R.id.konuma_git_button);
         if (konumaGitButton != null) {
             konumaGitButton.setOnClickListener(v -> {
-                Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude + "?q=" + latitude + "," + longitude + "(" + parkAdi + ")");
+                Uri gmmIntentUri = Uri.parse("geo:" + latitude + "," + longitude);
                 Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
                 mapIntent.setPackage("com.google.android.apps.maps");
-                if (mapIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(mapIntent); // Haritayı başlat
-                }
+                startActivity(mapIntent);
             });
         }
 

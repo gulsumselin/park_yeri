@@ -1,45 +1,26 @@
-package me.gulsum.otopark.UI.Model;
+package me.gulsum.otopark.model;
 
-import java.util.Date;
-
-public class Reservation {
-    private String id;
+public class ReservationRequest {
     private String email;
     private String parkName;
     private String reservationId;
     private String entryTime;
     private double payment;
-    private Date createdAt;
-    private Date updatedAt;
-    private int __v;
 
     // Constructor
-    public Reservation(String id, String email, String parkName, String reservationId, String entryTime,
-                       double payment, Date createdAt, Date updatedAt, int __v) {
-        this.id = id;
+    public ReservationRequest(String email, String parkName, String reservationId, String entryTime, double payment) {
         this.email = email;
         this.parkName = parkName;
         this.reservationId = reservationId;
         this.entryTime = entryTime;
         this.payment = payment;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.__v = __v;
     }
 
     // Default Constructor
-    public Reservation() {
+    public ReservationRequest() {
     }
 
-    // Getter ve Setter metodları
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
+    // Getter ve setter'lar
     public String getEmail() {
         return email;
     }
@@ -81,42 +62,14 @@ public class Reservation {
         this.payment = payment;
     }
 
-    public Date getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public Date getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(Date updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
-    public int get__v() {
-        return __v;
-    }
-
-    public void set__v(int __v) {
-        this.__v = __v;
-    }
-
     @Override
     public String toString() {
-        return "Reservation{" +
-                "id='" + id + '\'' +
-                ", email='" + email + '\'' +
+        return "ReservationRequest{" +
+                "email='" + email + '\'' +
                 ", parkName='" + parkName + '\'' +
                 ", reservationId='" + reservationId + '\'' +
                 ", entryTime='" + entryTime + '\'' +
                 ", payment=" + payment +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", __v=" + __v +
                 '}';
     }
 }

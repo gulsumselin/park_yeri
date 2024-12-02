@@ -45,7 +45,7 @@ public interface ApiService {
 
     // Rezervasyon ekleme
     @POST("/reservation")
-    Call<ReservationResponse> createReservation(@Body ReservationRequest reservationRequest);
+    Call<ReservationResponse> saveReservationToDatabase(@Body ReservationRequest reservationRequest);
 
     // Email ile rezervasyon sorgulama
     @GET("/reservations")
